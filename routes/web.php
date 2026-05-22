@@ -1,0 +1,117 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ClaimController;
+use App\Http\Controllers\Admin;
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC ROUTES (bisa diakses semua orang)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', function () {
+    return view('auth.login');
+});
+
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+// Barang hilang & temuan (public)
+Route::get('/barang-hilang', [ReportController::class, 'hilang'])->name('reports.hilang');
+Route::get('/barang-temuan', [ReportController::class, 'temuan'])->name('reports.temuan');
+Route::get('/barang/{id}', [ReportController::class, 'show'])->name('reports.show');
+
+/*
+|--------------------------------------------------------------------------
+| AUTH USER ROUTES (khusus mahasiswa yang sudah login)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth'])->group(function () {
+
+    // Dashboard user
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Laporan
+    Route::get('/laporan/buat', [ReportController::class, 'create'])->name('reports.create');
+    Route::post('/laporan/buat', [ReportController::class, 'store'])->middleware('throttle.reports')->name('reports.store');
+    Route::get('/laporan/saya', [ReportController::class, 'myReports'])->name('my.reports');
+    Route::get('/laporan/{id}/edit', [ReportController::class, 'edit'])->name('reports.edit');
+    Route::put('/laporan/{id}', [ReportController::class, 'update'])->name('reports.update');
+    Route::delete('/laporan/{id}', [ReportController::class, 'destroy'])->name('reports.destroy');
+
+    // ⚠️ KLAIM — /saya harus SEBELUM /{reportId}
+    Route::get('/klaim/saya', [ClaimController::class, 'myClaims'])->name('my.claims');
+    Route::get('/klaim/{reportId}/ajukan', [ClaimController::class, 'create'])->name('claims.create');
+    Route::post('/klaim/{reportId}/ajukan', [ClaimController::class, 'store'])->middleware('throttle.claims')->name('claims.store');
+    Route::delete('/klaim/{id}', [ClaimController::class, 'cancel'])->name('claims.cancel');
+
+    // Chatbot
+Route::post('/chatbot', [App\Http\Controllers\ChatbotController::class, 'ask'])
+    ->name('chatbot.ask');
+});
+/*
+|--------------------------------------------------------------------------
+| ADMIN ROUTES (khusus admin)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // Laporan
+    Route::get('/laporan', [App\Http\Controllers\Admin\ReportController::class, 'index'])
+        ->name('reports.index');
+    Route::get('/laporan/{id}', [App\Http\Controllers\Admin\ReportController::class, 'show'])
+        ->name('reports.show');
+    Route::patch('/laporan/{id}/approve', [App\Http\Controllers\Admin\ReportController::class, 'approve'])
+        ->name('reports.approve');
+    Route::patch('/laporan/{id}/reject', [App\Http\Controllers\Admin\ReportController::class, 'reject'])
+        ->name('reports.reject');
+    Route::patch('/laporan/{id}/complete', [App\Http\Controllers\Admin\ReportController::class, 'complete'])
+        ->name('reports.complete');
+    Route::delete('/laporan/{id}', [App\Http\Controllers\Admin\ReportController::class, 'destroy'])
+        ->name('reports.destroy');
+
+    // Klaim
+    Route::get('/klaim', [App\Http\Controllers\Admin\ClaimController::class, 'index'])
+        ->name('claims.index');
+    Route::get('/klaim/{id}', [App\Http\Controllers\Admin\ClaimController::class, 'show'])
+        ->name('claims.show');
+    Route::patch('/klaim/{id}/approve', [App\Http\Controllers\Admin\ClaimController::class, 'approve'])
+        ->name('claims.approve');
+    Route::patch('/klaim/{id}/reject', [App\Http\Controllers\Admin\ClaimController::class, 'reject'])
+        ->name('claims.reject');
+
+    // User
+    Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])
+        ->name('users.index');
+    Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])
+        ->name('users.destroy');
+
+    // Kategori
+    Route::get('/kategori', [App\Http\Controllers\Admin\CategoryController::class, 'index'])
+        ->name('categories.index');
+    Route::post('/kategori', [App\Http\Controllers\Admin\CategoryController::class, 'store'])
+        ->name('categories.store');
+    Route::get('/kategori/{id}/edit', [App\Http\Controllers\Admin\CategoryController::class, 'edit'])
+        ->name('categories.edit');
+    Route::put('/kategori/{id}', [App\Http\Controllers\Admin\CategoryController::class, 'update'])
+        ->name('categories.update');
+    Route::delete('/kategori/{id}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
+        ->name('categories.destroy');
+
+});
+
+// Auth routes dari Breeze
+require __DIR__.'/auth.php'; 
