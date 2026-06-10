@@ -77,78 +77,80 @@
             Daftar Testimoni ({{ $testimonials->total() }})
         </div>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>User</th>
-                <th>Barang</th>
-                <th>Rating</th>
-                <th>Testimoni</th>
-                <th>Tanggal</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($testimonials as $testimonial)
+    <div class="table-responsive-wrapper">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center"
-                                 style="width:36px;height:36px;background:var(--navy);color:var(--accent);font-size:11px;font-weight:bold;">
-                                {{ $testimonial->getUserInitials() }}
+                    <th>User</th>
+                    <th>Barang</th>
+                    <th>Rating</th>
+                    <th>Testimoni</th>
+                    <th>Tanggal</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($testimonials as $testimonial)
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                     style="width:36px;height:36px;background:var(--navy);color:var(--accent);font-size:11px;font-weight:bold;">
+                                    {{ $testimonial->getUserInitials() }}
+                                </div>
+                                <div>
+                                    <div style="font-size:12px;font-weight:600;">{{ $testimonial->user->name }}</div>
+                                    <div style="font-size:10px;color:var(--text-3);">{{ $testimonial->user->nim }}</div>
+                                </div>
                             </div>
+                        </td>
+                        <td>
+                            <div style="font-size:12px;font-weight:600;">{{ $testimonial->report->nama_barang }}</div>
+                            <div style="font-size:10px;color:var(--text-3);">{{ $testimonial->report->lokasi }}</div>
+                        </td>
+                        <td>
                             <div>
-                                <div style="font-size:12px;font-weight:600;">{{ $testimonial->user->name }}</div>
-                                <div style="font-size:10px;color:var(--text-3);">{{ $testimonial->user->nim }}</div>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <span style="color: {{ $i <= $testimonial->rating ? '#ffc107' : '#dee2e6' }}; font-size:12px;">
+                                        @if($i <= $testimonial->rating) ★ @else ☆ @endif
+                                    </span>
+                                @endfor
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-size:12px;font-weight:600;">{{ $testimonial->report->nama_barang }}</div>
-                        <div style="font-size:10px;color:var(--text-3);">{{ $testimonial->report->lokasi }}</div>
-                    </td>
-                    <td>
-                        <div>
-                            @for ($i = 1; $i <= 5; $i++)
-                                <span style="color: {{ $i <= $testimonial->rating ? '#ffc107' : '#dee2e6' }}; font-size:12px;">
-                                    @if($i <= $testimonial->rating) ★ @else ☆ @endif
-                                </span>
-                            @endfor
-                        </div>
-                    </td>
-                    <td>
-                        <div style="max-width:250px;font-size:12px;color:var(--text-2);">
-                            {{ Str::limit($testimonial->isi_testimoni, 80) }}
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-size:11px;color:var(--text-3);">
-                            {{ $testimonial->created_at->format('d M Y') }}
-                        </div>
-                    </td>
-                    <td>
-                        <form method="POST"
-                              action="{{ route('admin.testimonials.destroy', $testimonial->id) }}"
-                              onsubmit="return confirm('Yakin ingin menghapus testimoni ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    style="background:none;border:none;font-size:11px;color:var(--danger);font-weight:600;cursor:pointer;padding:0;">
-                                <i class="bi bi-trash me-1"></i>Hapus
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" style="text-align:center;color:var(--text-3);padding:40px;">
-                        <i class="bi bi-chat-quote fs-4 d-block mb-2"></i>
-                        Belum ada testimoni
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+                        </td>
+                        <td>
+                            <div style="max-width:250px;font-size:12px;color:var(--text-2);">
+                                {{ Str::limit($testimonial->isi_testimoni, 80) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size:11px;color:var(--text-3);">
+                                {{ $testimonial->created_at->format('d M Y') }}
+                            </div>
+                        </td>
+                        <td>
+                            <form method="POST"
+                                  action="{{ route('admin.testimonials.destroy', $testimonial->id) }}"
+                                  onsubmit="return confirm('Yakin ingin menghapus testimoni ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        style="background:none;border:none;font-size:11px;color:var(--danger);font-weight:600;cursor:pointer;padding:0;">
+                                    <i class="bi bi-trash me-1"></i>Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" style="text-align:center;color:var(--text-3);padding:40px;">
+                            <i class="bi bi-chat-quote fs-4 d-block mb-2"></i>
+                            Belum ada testimoni
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div class="mt-4 d-flex justify-content-center">

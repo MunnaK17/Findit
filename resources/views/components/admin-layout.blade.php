@@ -10,6 +10,52 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Responsive Table Styles for Admin --}}
+    <style>
+    /* Table wrapper for horizontal scroll on mobile */
+    .table-responsive-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 12px;
+    }
+
+    .table-responsive-wrapper::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .table-responsive-wrapper::-webkit-scrollbar-track {
+        background: var(--bg);
+        border-radius: 3px;
+    }
+
+    .table-responsive-wrapper::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+    }
+
+    .table-responsive-wrapper::-webkit-scrollbar-thumb:hover {
+        background: var(--text-3);
+    }
+
+    /* Ensure table doesn't shrink below min-width */
+    .table-responsive-wrapper .table {
+        min-width: 700px;
+        white-space: nowrap;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 767.98px) {
+        .table-responsive-wrapper .table {
+            font-size: 11px;
+        }
+
+        .table-responsive-wrapper .table th,
+        .table-responsive-wrapper .table td {
+            padding: 8px 10px;
+        }
+    }
+    </style>
 </head>
 <body style="margin:0;padding:0;">
 

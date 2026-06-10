@@ -42,69 +42,71 @@
 
     {{-- Table --}}
     <div class="table-card">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Barang</th>
-                    <th>Pelapor</th>
-                    <th>Jenis</th>
-                    <th>Lokasi</th>
-                    <th>Tanggal</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($reports as $report)
+        <div class="table-responsive-wrapper">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td style="color:var(--text-3);">{{ $report->id }}</td>
-                        <td>
-                            <div style="font-weight:600;font-size:12px;">{{ $report->nama_barang }}</div>
-                            <div style="font-size:10px;color:var(--text-3);">{{ $report->category->nama_category }}</div>
-                        </td>
-                        <td>
-                            <div style="font-size:12px;font-weight:500;">{{ $report->user->name }}</div>
-                            <div style="font-size:10px;color:var(--text-3);">{{ $report->user->nim }}</div>
-                        </td>
-                        <td>
-                            @if($report->jenis_laporan === 'hilang')
-                                <span class="findit-badge b-red">Hilang</span>
-                            @else
-                                <span class="findit-badge b-green">Temuan</span>
-                            @endif
-                        </td>
-                        <td style="font-size:11px;color:var(--text-2);">{{ Str::limit($report->lokasi, 25) }}</td>
-                        <td style="font-size:11px;color:var(--text-2);">
-                            {{ $report->tanggal_kejadian->format('d M Y') }}
-                        </td>
-                        <td>
-                            @if($report->status === 'pending')
-                                <span class="findit-badge b-amber">Pending</span>
-                            @elseif($report->status === 'approved')
-                                <span class="findit-badge b-navy">Approved</span>
-                            @elseif($report->status === 'rejected')
-                                <span class="findit-badge b-red">Rejected</span>
-                            @else
-                                <span class="findit-badge b-green">Selesai</span>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.reports.show', $report->id) }}"
-                               class="btn btn-outline-findit btn-sm px-3">
-                                Detail
-                            </a>
-                        </td>
+                        <th>#</th>
+                        <th>Barang</th>
+                        <th>Pelapor</th>
+                        <th>Jenis</th>
+                        <th>Lokasi</th>
+                        <th>Tanggal</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="8" style="text-align:center;color:var(--text-3);padding:32px;">
-                            Tidak ada laporan ditemukan
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($reports as $report)
+                        <tr>
+                            <td style="color:var(--text-3);">{{ $report->id }}</td>
+                            <td>
+                                <div style="font-weight:600;font-size:12px;">{{ $report->nama_barang }}</div>
+                                <div style="font-size:10px;color:var(--text-3);">{{ $report->category->nama_category }}</div>
+                            </td>
+                            <td>
+                                <div style="font-size:12px;font-weight:500;">{{ $report->user->name }}</div>
+                                <div style="font-size:10px;color:var(--text-3);">{{ $report->user->nim }}</div>
+                            </td>
+                            <td>
+                                @if($report->jenis_laporan === 'hilang')
+                                    <span class="findit-badge b-red">Hilang</span>
+                                @else
+                                    <span class="findit-badge b-green">Temuan</span>
+                                @endif
+                            </td>
+                            <td style="font-size:11px;color:var(--text-2);">{{ Str::limit($report->lokasi, 25) }}</td>
+                            <td style="font-size:11px;color:var(--text-2);">
+                                {{ $report->tanggal_kejadian->format('d M Y') }}
+                            </td>
+                            <td>
+                                @if($report->status === 'pending')
+                                    <span class="findit-badge b-amber">Pending</span>
+                                @elseif($report->status === 'approved')
+                                    <span class="findit-badge b-navy">Approved</span>
+                                @elseif($report->status === 'rejected')
+                                    <span class="findit-badge b-red">Rejected</span>
+                                @else
+                                    <span class="findit-badge b-green">Selesai</span>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.reports.show', $report->id) }}"
+                                   class="btn btn-outline-findit btn-sm px-3">
+                                    Detail
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" style="text-align:center;color:var(--text-3);padding:32px;">
+                                Tidak ada laporan ditemukan
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="mt-3 d-flex justify-content-center">

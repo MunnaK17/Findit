@@ -35,75 +35,77 @@
 
     {{-- Table --}}
     <div class="table-card">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>User</th>
-                    <th>NIM</th>
-                    <th>No. HP</th>
-                    <th>Role</th>
-                    <th>Bergabung</th>
-                    <th>Laporan</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($users as $user)
+        <div class="table-responsive-wrapper">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td style="color:var(--text-3);">{{ $user->id }}</td>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div style="width:32px;height:32px;border-radius:8px;background:var(--navy);
-                                            color:#fff;font-size:11px;font-weight:800;
-                                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    {{ strtoupper(substr($user->name, 0, 2)) }}
-                                </div>
-                                <div>
-                                    <div style="font-weight:600;font-size:12px;">{{ $user->name }}</div>
-                                    <div style="font-size:10px;color:var(--text-3);">{{ $user->email }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td style="font-size:12px;">{{ $user->nim ?? '-' }}</td>
-                        <td style="font-size:12px;">{{ $user->phone ?? '-' }}</td>
-                        <td>
-                            @if($user->role === 'admin')
-                                <span class="findit-badge b-navy">Admin</span>
-                            @else
-                                <span class="findit-badge b-gray">Mahasiswa</span>
-                            @endif
-                        </td>
-                        <td style="font-size:11px;color:var(--text-2);">
-                            {{ $user->created_at->format('d M Y') }}
-                        </td>
-                        <td style="font-size:12px;font-weight:600;">
-                            {{ $user->reports()->count() }}
-                        </td>
-                        <td>
-                            @if($user->id !== Auth::id())
-                                <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}"
-                                      onsubmit="return confirm('Hapus user {{ $user->name }}?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit"
-                                            style="background:none;border:none;font-size:11px;color:var(--danger);font-weight:600;cursor:pointer;padding:0;">
-                                        Hapus
-                                    </button>
-                                </form>
-                            @else
-                                <span style="font-size:11px;color:var(--text-3);">— Kamu</span>
-                            @endif
-                        </td>
+                        <th>#</th>
+                        <th>User</th>
+                        <th>NIM</th>
+                        <th>No. HP</th>
+                        <th>Role</th>
+                        <th>Bergabung</th>
+                        <th>Laporan</th>
+                        <th>Aksi</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="8" style="text-align:center;color:var(--text-3);padding:32px;">
-                            Tidak ada user ditemukan
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($users as $user)
+                        <tr>
+                            <td style="color:var(--text-3);">{{ $user->id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:32px;height:32px;border-radius:8px;background:var(--navy);
+                                                color:#fff;font-size:11px;font-weight:800;
+                                                display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                        {{ strtoupper(substr($user->name, 0, 2)) }}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:12px;">{{ $user->name }}</div>
+                                        <div style="font-size:10px;color:var(--text-3);">{{ $user->email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-size:12px;">{{ $user->nim ?? '-' }}</td>
+                            <td style="font-size:12px;">{{ $user->phone ?? '-' }}</td>
+                            <td>
+                                @if($user->role === 'admin')
+                                    <span class="findit-badge b-navy">Admin</span>
+                                @else
+                                    <span class="findit-badge b-gray">Mahasiswa</span>
+                                @endif
+                            </td>
+                            <td style="font-size:11px;color:var(--text-2);">
+                                {{ $user->created_at->format('d M Y') }}
+                            </td>
+                            <td style="font-size:12px;font-weight:600;">
+                                {{ $user->reports()->count() }}
+                            </td>
+                            <td>
+                                @if($user->id !== Auth::id())
+                                    <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}"
+                                          onsubmit="return confirm('Hapus user {{ $user->name }}?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit"
+                                                style="background:none;border:none;font-size:11px;color:var(--danger);font-weight:600;cursor:pointer;padding:0;">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                @else
+                                    <span style="font-size:11px;color:var(--text-3);">— Kamu</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" style="text-align:center;color:var(--text-3);padding:32px;">
+                                Tidak ada user ditemukan
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="mt-3 d-flex justify-content-center">

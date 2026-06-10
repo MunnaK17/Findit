@@ -43,57 +43,59 @@
                         Daftar Kategori ({{ $categories->total() }})
                     </div>
                 </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nama Kategori</th>
-                            <th>Jumlah Laporan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($categories as $category)
+                <div class="table-responsive-wrapper">
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td style="color:var(--text-3);">{{ $category->id }}</td>
-                                <td style="font-size:12px;font-weight:600;">
-                                    {{ $category->nama_category }}
-                                </td>
-                                <td>
-                                    <span class="findit-badge b-navy">
-                                        {{ $category->reports_count }} laporan
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                           style="font-size:11px;color:var(--warning);font-weight:600;text-decoration:none;">
-                                            Edit
-                                        </a>
-                                        @if($category->reports_count === 0)
-                                            <span style="color:var(--border);">|</span>
-                                            <form method="POST"
-                                                  action="{{ route('admin.categories.destroy', $category->id) }}"
-                                                  onsubmit="return confirm('Hapus kategori ini?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit"
-                                                        style="background:none;border:none;font-size:11px;color:var(--danger);font-weight:600;cursor:pointer;padding:0;">
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </div>
-                                </td>
+                                <th>#</th>
+                                <th>Nama Kategori</th>
+                                <th>Jumlah Laporan</th>
+                                <th>Aksi</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" style="text-align:center;color:var(--text-3);padding:32px;">
-                                    Belum ada kategori
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($categories as $category)
+                                <tr>
+                                    <td style="color:var(--text-3);">{{ $category->id }}</td>
+                                    <td style="font-size:12px;font-weight:600;">
+                                        {{ $category->nama_category }}
+                                    </td>
+                                    <td>
+                                        <span class="findit-badge b-navy">
+                                            {{ $category->reports_count }} laporan
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                               style="font-size:11px;color:var(--warning);font-weight:600;text-decoration:none;">
+                                                Edit
+                                            </a>
+                                            @if($category->reports_count === 0)
+                                                <span style="color:var(--border);">|</span>
+                                                <form method="POST"
+                                                      action="{{ route('admin.categories.destroy', $category->id) }}"
+                                                      onsubmit="return confirm('Hapus kategori ini?')">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit"
+                                                            style="background:none;border:none;font-size:11px;color:var(--danger);font-weight:600;cursor:pointer;padding:0;">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" style="text-align:center;color:var(--text-3);padding:32px;">
+                                        Belum ada kategori
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="mt-3 d-flex justify-content-center">
                 {{ $categories->links() }}
