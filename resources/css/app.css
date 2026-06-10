@@ -836,3 +836,13 @@ body {
         margin-top: 56px;
     }
 }
+
+/* Testimonial Rating Stars */
+.landing-story__rating {
+    margin-bottom: 14px;
+    font-size: 1.1rem;
+}
+
+.landing-story__rating span {
+    margin-right: 2px;
+}

@@ -74,6 +74,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Testimoni
+    Route::get('/testimoni/buat/{claimId}', [App\Http\Controllers\TestimonialController::class, 'create'])->name('testimonials.create');
+    Route::post('/testimoni', [App\Http\Controllers\TestimonialController::class, 'store'])->name('testimonials.store');
+    Route::get('/testimoni/saya', [App\Http\Controllers\TestimonialController::class, 'myTestimonials'])->name('my.testimonials');
+    Route::get('/testimoni/{id}/edit', [App\Http\Controllers\TestimonialController::class, 'edit'])->name('testimonials.edit');
+    Route::put('/testimoni/{id}', [App\Http\Controllers\TestimonialController::class, 'update'])->name('testimonials.update');
+    Route::delete('/testimoni/{id}', [App\Http\Controllers\TestimonialController::class, 'destroy'])->name('testimonials.destroy');
 });
 /*
 |--------------------------------------------------------------------------
@@ -131,6 +139,12 @@ Route::middleware(['auth', 'admin'])
         ->name('categories.update');
     Route::delete('/kategori/{id}', [App\Http\Controllers\Admin\CategoryController::class, 'destroy'])
         ->name('categories.destroy');
+
+    // Testimoni
+    Route::get('/testimoni', [App\Http\Controllers\Admin\TestimonialController::class, 'index'])
+        ->name('testimonials.index');
+    Route::delete('/testimoni/{id}', [App\Http\Controllers\Admin\TestimonialController::class, 'destroy'])
+        ->name('testimonials.destroy');
 
 });
 

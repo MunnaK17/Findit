@@ -37,6 +37,18 @@ class Claim extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
+    // Relasi: Klaim memiliki satu testimoni (nullable)
+    public function testimonial()
+    {
+        return $this->hasOne(Testimonial::class, 'id_claim');
+    }
+
+    // Helper: cek apakah klaim sudah ada testimoni
+    public function hasTestimonial(): bool
+    {
+        return $this->testimonial()->exists();
+    }
+
     // Helper: label status klaim dengan badge warna
     public function statusBadge(): string
     {

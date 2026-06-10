@@ -83,6 +83,28 @@
                                 Silakan datang ke admin kampus di lobby untuk pengambilan barang. Tunjukkan halaman ini sebagai bukti.
                             </div>
                         </div>
+
+                        {{-- Tombol Testimoni --}}
+                        @if($claim->hasTestimonial())
+                            <div style="margin-top:12px;background:var(--navy-pale);border-radius:var(--r);
+                                        padding:10px 14px;border:0.5px solid rgba(26,58,107,0.15);">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <span style="color:#ffc107;">★★★★★</span>
+                                    <span style="font-size:11px;color:var(--text-2);">
+                                        Terima kasih sudah memberikan testimoni!
+                                    </span>
+                                </div>
+                            </div>
+                        @else
+                            <div style="margin-top:12px;display:flex;align-items:center;gap:8px;">
+                                <a href="{{ route('testimonials.create', $claim->id) }}"
+                                   class="btn btn-sm"
+                                   style="background:var(--accent);color:var(--navy);font-weight:700;font-size:12px;border-radius:var(--r);padding:8px 16px;text-decoration:none;">
+                                    <i class="bi bi-chat-quote me-1"></i>
+                                    Beri Testimoni
+                                </a>
+                            </div>
+                        @endif
                     @elseif($claim->status_klaim === 'rejected')
                         <div style="margin-top:12px;background:var(--danger-light);border-radius:var(--r);
                                     padding:10px 14px;border:0.5px solid rgba(220,38,38,0.2);">

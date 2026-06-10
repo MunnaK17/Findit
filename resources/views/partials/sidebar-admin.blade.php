@@ -53,6 +53,14 @@
         <span class="sitem-label">Kategori</span>
     </a>
 
+    <a href="{{ route('admin.testimonials.index') }}"
+       class="sitem {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
+        <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span class="sitem-label">Testimoni</span>
+    </a>
+
     {{-- Spacer --}}
     <div class="mt-auto">
         <div style="font-size:10px;color:var(--text-3);padding:8px 10px;">

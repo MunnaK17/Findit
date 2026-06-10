@@ -3,6 +3,7 @@
     $countTemuan = \App\Models\Report::where('jenis_laporan', 'temuan')->where('status', 'approved')->count();
     $countHilang = \App\Models\Report::where('jenis_laporan', 'hilang')->where('status', 'approved')->count();
     $countSelesai = \App\Models\Report::where('status', 'completed')->count();
+    $testimonials = \App\Models\Testimonial::with('user')->latest()->limit(3)->get();
 
     $imageFor = fn ($report) => $report->foto_barang ? asset('storage/' . $report->foto_barang) : null;
 @endphp
@@ -178,23 +179,48 @@
                 <p>Melihat barang-barang kembali ke pemiliknya adalah alasan kami ada. Bangun kampus yang lebih baik bersama-sama.</p>
             </div>
 
-            <div class="landing-story-grid">
-                <article class="landing-story">
-                    <div class="landing-story__person"><span>RA</span><div><strong>Rizky A.</strong><small>Mahasiswa Teknik</small></div></div>
-                    <p>"Kunci motor saya jatuh di parkiran. Berkat Find.It, hanya butuh 2 jam sampai seseorang menemukannya."</p>
-                    <div class="landing-story__status">Status: Dikembalikan</div>
-                </article>
-                <article class="landing-story landing-story--featured">
-                    <div class="landing-story__person"><span>SW</span><div><strong>Siska W.</strong><small>Mahasiswa Ekonomi</small></div></div>
-                    <p>"iPad saya tertinggal di mushola. Jujur sudah pasrah, tapi ternyata ada yang lapor di sini."</p>
-                    <div class="landing-story__status">Status: Dikembalikan</div>
-                </article>
-                <article class="landing-story">
-                    <div class="landing-story__person"><span>BT</span><div><strong>Budi T.</strong><small>Mahasiswa Ilmu Komputer</small></div></div>
-                    <p>"Nemuin kartu mahasiswa di jalan. Pemiliknya langsung kontak saya sore harinya. Senang bisa bantu."</p>
-                    <div class="landing-story__status">Status: Dikembalikan</div>
-                </article>
-            </div>
+            @if($testimonials->count() > 0)
+                <div class="landing-story-grid">
+                    @foreach($testimonials as $testimonial)
+                        <article class="landing-story">
+                            <div class="landing-story__person">
+                                <span>{{ $testimonial->getUserInitials() }}</span>
+                                <div>
+                                    <strong>{{ $testimonial->user->name }}</strong>
+                                    <small>{{ $testimonial->user->nim ?? 'Mahasiswa' }}</small>
+                                </div>
+                            </div>
+                            <div class="landing-story__rating">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <span style="color: {{ $i <= $testimonial->rating ? '#ffc107' : '#dee2e6' }};">
+                                        @if($i <= $testimonial->rating) ★ @else ☆ @endif
+                                    </span>
+                                @endfor
+                            </div>
+                            <p>"{{ $testimonial->isi_testimoni }}"</p>
+                            <div class="landing-story__status">Status: Dikembalikan</div>
+                        </article>
+                    @endforeach
+                </div>
+            @else
+                <div class="landing-story-grid">
+                    <article class="landing-story">
+                        <div class="landing-story__person"><span>RA</span><div><strong>Rizky A.</strong><small>Mahasiswa Teknik</small></div></div>
+                        <p>"Kunci motor saya jatuh di parkiran. Berkat Find.It, hanya butuh 2 jam sampai seseorang menemukannya."</p>
+                        <div class="landing-story__status">Status: Dikembalikan</div>
+                    </article>
+                    <article class="landing-story landing-story--featured">
+                        <div class="landing-story__person"><span>SW</span><div><strong>Siska W.</strong><small>Mahasiswa Ekonomi</small></div></div>
+                        <p>"iPad saya tertinggal di mushola. Jujur sudah pasrah, tapi ternyata ada yang lapor di sini."</p>
+                        <div class="landing-story__status">Status: Dikembalikan</div>
+                    </article>
+                    <article class="landing-story">
+                        <div class="landing-story__person"><span>BT</span><div><strong>Budi T.</strong><small>Mahasiswa Ilmu Komputer</small></div></div>
+                        <p>"Nemuin kartu mahasiswa di jalan. Pemiliknya langsung kontak saya sore harinya. Senang bisa bantu."</p>
+                        <div class="landing-story__status">Status: Dikembalikan</div>
+                    </article>
+                </div>
+            @endif
         </div>
     </section>
 </div>

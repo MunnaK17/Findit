@@ -50,4 +50,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Claim::class, 'id_user');
     }
+
+    // Relasi: User memiliki banyak testimoni
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class, 'id_user');
+    }
 }
