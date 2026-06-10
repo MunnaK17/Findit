@@ -133,15 +133,16 @@
                                                     <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                                                 </div>
                                             @endif
-                                            <span class="landing-chip landing-chip--found">Temuan</span>
+                                            <span class="landing-carousel-badge landing-carousel-badge--found">Temuan</span>
                                         </div>
                                         <div class="landing-carousel-card__body">
                                             <h3>{{ $report->nama_barang }}</h3>
-                                            <p>{{ $report->lokasi }}</p>
+                                            <p>📍 {{ $report->lokasi }}</p>
                                             <div class="landing-carousel-card__meta">
                                                 <span>{{ optional($report->category)->nama_category ?? 'Tanpa kategori' }}</span>
-                                                <span>{{ $report->created_at->diffForHumans() }}</span>
+                                                <span>{{ $report->tanggal_kejadian->format('d M Y') }}</span>
                                             </div>
+                                            <div class="landing-carousel-card__time">{{ $report->created_at->diffForHumans() }}</div>
                                         </div>
                                     </a>
                                 @endforeach
@@ -215,15 +216,16 @@
                                                     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                                                 </div>
                                             @endif
-                                            <span class="landing-chip landing-chip--lost">Hilang</span>
+                                            <span class="landing-carousel-badge landing-carousel-badge--lost">Hilang</span>
                                         </div>
                                         <div class="landing-carousel-card__body">
                                             <h3>{{ $report->nama_barang }}</h3>
-                                            <p>{{ $report->lokasi }}</p>
+                                            <p>📍 {{ $report->lokasi }}</p>
                                             <div class="landing-carousel-card__meta">
                                                 <span>{{ optional($report->category)->nama_category ?? 'Tanpa kategori' }}</span>
-                                                <span>{{ $report->created_at->diffForHumans() }}</span>
+                                                <span>{{ $report->tanggal_kejadian->format('d M Y') }}</span>
                                             </div>
+                                            <div class="landing-carousel-card__time">{{ $report->created_at->diffForHumans() }}</div>
                                         </div>
                                     </a>
                                 @endforeach
@@ -370,23 +372,24 @@
     opacity: 0.6;
 }
 
-.landing-chip {
+/* Badge in image */
+.landing-carousel-badge {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 8px;
+    left: 8px;
     padding: 4px 10px;
     border-radius: 20px;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
 }
 
-.landing-chip--found {
-    background: rgba(16, 185, 129, 0.9);
+.landing-carousel-badge--found {
+    background: #10b981;
     color: #fff;
 }
 
-.landing-chip--lost {
-    background: rgba(239, 68, 68, 0.9);
+.landing-carousel-badge--lost {
+    background: #ef4444;
     color: #fff;
 }
 
@@ -407,7 +410,7 @@
 .landing-carousel-card__body p {
     font-size: 11px;
     color: #6b7280;
-    margin: 0 0 8px 0;
+    margin: 0 0 4px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -417,6 +420,12 @@
     display: flex;
     justify-content: space-between;
     font-size: 10px;
+    color: #9ca3af;
+    margin-bottom: 2px;
+}
+
+.landing-carousel-card__time {
+    font-size: 9px;
     color: #9ca3af;
 }
 

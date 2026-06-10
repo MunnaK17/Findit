@@ -92,6 +92,7 @@
                                 @else
                                     <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                                 @endif
+                                <span class="carousel-badge carousel-badge--found">Temuan</span>
                             </div>
                             <div class="carousel-card-body">
                                 <div class="carousel-card-name">{{ $report->nama_barang }}</div>
@@ -99,11 +100,8 @@
                                 <div class="carousel-card-date">
                                     {{ $report->category->nama_category }} · {{ $report->tanggal_kejadian->format('d M Y') }}
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="findit-badge b-green">Temuan</span>
-                                    <span style="font-size:9px;color:#9ca3af;">
-                                        {{ $report->created_at->diffForHumans() }}
-                                    </span>
+                                <div class="carousel-card-time">
+                                    {{ $report->created_at->diffForHumans() }}
                                 </div>
                             </div>
                         </a>
@@ -180,6 +178,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
 }
 
 .carousel-card-img img {
@@ -195,6 +194,27 @@
     fill: none;
     stroke-width: 1.5;
     opacity: 0.6;
+}
+
+/* Badge in image */
+.carousel-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.carousel-badge--found {
+    background: #10b981;
+    color: #fff;
+}
+
+.carousel-badge--lost {
+    background: #ef4444;
+    color: #fff;
 }
 
 .carousel-card-body {
@@ -223,7 +243,12 @@
 .carousel-card-date {
     font-size: 10px;
     color: #9ca3af;
-    margin-bottom: 10px;
+    margin-bottom: 2px;
+}
+
+.carousel-card-time {
+    font-size: 9px;
+    color: #9ca3af;
 }
 
 /* Dots Indicator */
