@@ -80,6 +80,7 @@
 
     <section class="landing-feed">
         <div class="landing-container">
+            {{-- Barang Temuan Terbaru --}}
             <div class="landing-section">
                 <div class="landing-section__head">
                     <div>
@@ -90,29 +91,63 @@
                 </div>
 
                 @if($laporanTemuan->count() > 0)
-                    <div class="landing-card-grid">
-                        @foreach($laporanTemuan as $report)
-                            <a href="{{ route('reports.show', $report->id) }}" class="landing-item-card">
-                                <div class="landing-item-card__media">
-                                    @if($imageFor($report))
-                                        <img src="{{ $imageFor($report) }}" class="lightbox-img" alt="{{ $report->nama_barang }}">
-                                    @else
-                                        <div class="landing-item-card__placeholder">
-                                            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                                        </div>
-                                    @endif
-                                    <span class="landing-chip landing-chip--found">Temuan</span>
-                                </div>
-                                <div class="landing-item-card__body">
-                                    <h3>{{ $report->nama_barang }}</h3>
-                                    <p>{{ $report->lokasi }}</p>
-                                    <div class="landing-item-card__meta">
-                                        <span>{{ optional($report->category)->nama_category ?? 'Tanpa kategori' }}</span>
-                                        <span>{{ $report->created_at->diffForHumans() }}</span>
+                    {{-- Desktop Grid (md+) --}}
+                    <div class="d-none d-md-block">
+                        <div class="landing-card-grid">
+                            @foreach($laporanTemuan as $report)
+                                <a href="{{ route('reports.show', $report->id) }}" class="landing-item-card">
+                                    <div class="landing-item-card__media">
+                                        @if($imageFor($report))
+                                            <img src="{{ $imageFor($report) }}" class="lightbox-img" alt="{{ $report->nama_barang }}">
+                                        @else
+                                            <div class="landing-item-card__placeholder">
+                                                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                                            </div>
+                                        @endif
+                                        <span class="landing-chip landing-chip--found">Temuan</span>
                                     </div>
-                                </div>
-                            </a>
-                        @endforeach
+                                    <div class="landing-item-card__body">
+                                        <h3>{{ $report->nama_barang }}</h3>
+                                        <p>{{ $report->lokasi }}</p>
+                                        <div class="landing-item-card__meta">
+                                            <span>{{ optional($report->category)->nama_category ?? 'Tanpa kategori' }}</span>
+                                            <span>{{ $report->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Mobile Carousel (< md) --}}
+                    <div class="d-md-none">
+                        <div class="landing-carousel-wrapper">
+                            <div class="landing-carousel-track" id="carousel-home-temuan">
+                                @foreach($laporanTemuan as $report)
+                                    <a href="{{ route('reports.show', $report->id) }}" class="landing-carousel-card">
+                                        <div class="landing-carousel-card__media">
+                                            @if($imageFor($report))
+                                                <img src="{{ $imageFor($report) }}" alt="{{ $report->nama_barang }}">
+                                            @else
+                                                <div class="landing-carousel-card__placeholder">
+                                                    <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                                                </div>
+                                            @endif
+                                            <span class="landing-chip landing-chip--found">Temuan</span>
+                                        </div>
+                                        <div class="landing-carousel-card__body">
+                                            <h3>{{ $report->nama_barang }}</h3>
+                                            <p>{{ $report->lokasi }}</p>
+                                            <div class="landing-carousel-card__meta">
+                                                <span>{{ optional($report->category)->nama_category ?? 'Tanpa kategori' }}</span>
+                                                <span>{{ $report->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                            <div class="landing-carousel-dots" id="carousel-home-temuan-dots"></div>
+                        </div>
                     </div>
                 @else
                     <div class="landing-empty">
@@ -122,6 +157,7 @@
                 @endif
             </div>
 
+            {{-- Barang Hilang Terbaru --}}
             <div class="landing-section">
                 <div class="landing-section__head">
                     <div>
@@ -132,34 +168,68 @@
                 </div>
 
                 @if($laporanHilang->count() > 0)
-                    <div class="landing-card-grid">
-                        @foreach($laporanHilang as $report)
-                            <a href="{{ route('reports.show', $report->id) }}" class="landing-item-card">
-                                <div class="landing-item-card__media">
-                                    @if($imageFor($report))
-                                        <img src="{{ $imageFor($report) }}" class="lightbox-img" alt="{{ $report->nama_barang }}">
-                                    @else
-                                        <div class="landing-item-card__placeholder">
-                                            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                                        </div>
-                                    @endif
-                                    <span class="landing-chip landing-chip--lost">Hilang</span>
-                                </div>
-                                <div class="landing-item-card__body">
-                                    <h3>{{ $report->nama_barang }}</h3>
-                                    <p>{{ $report->lokasi }}</p>
-                                    <div class="landing-item-card__meta">
-                                        <span>{{ optional($report->category)->nama_category ?? 'Tanpa kategori' }}</span>
-                                        <span>{{ $report->created_at->diffForHumans() }}</span>
+                    {{-- Desktop Grid (md+) --}}
+                    <div class="d-none d-md-block">
+                        <div class="landing-card-grid">
+                            @foreach($laporanHilang as $report)
+                                <a href="{{ route('reports.show', $report->id) }}" class="landing-item-card">
+                                    <div class="landing-item-card__media">
+                                        @if($imageFor($report))
+                                            <img src="{{ $imageFor($report) }}" class="lightbox-img" alt="{{ $report->nama_barang }}">
+                                        @else
+                                            <div class="landing-item-card__placeholder">
+                                                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                            </div>
+                                        @endif
+                                        <span class="landing-chip landing-chip--lost">Hilang</span>
                                     </div>
-                                </div>
-                            </a>
-                        @endforeach
+                                    <div class="landing-item-card__body">
+                                        <h3>{{ $report->nama_barang }}</h3>
+                                        <p>{{ $report->lokasi }}</p>
+                                        <div class="landing-item-card__meta">
+                                            <span>{{ optional($report->category)->nama_category ?? 'Tanpa kategori' }}</span>
+                                            <span>{{ $report->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            @endforeach
 
-                        <a href="{{ auth()->check() ? route('reports.create') : route('register') }}" class="landing-report-slot">
-                            <span>+</span>
-                            Laporkan barang hilang milik Anda di sini
-                        </a>
+                            <a href="{{ auth()->check() ? route('reports.create') : route('register') }}" class="landing-report-slot">
+                                <span>+</span>
+                                Laporkan barang hilang milik Anda di sini
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- Mobile Carousel (< md) --}}
+                    <div class="d-md-none">
+                        <div class="landing-carousel-wrapper">
+                            <div class="landing-carousel-track" id="carousel-home-hilang">
+                                @foreach($laporanHilang as $report)
+                                    <a href="{{ route('reports.show', $report->id) }}" class="landing-carousel-card">
+                                        <div class="landing-carousel-card__media">
+                                            @if($imageFor($report))
+                                                <img src="{{ $imageFor($report) }}" alt="{{ $report->nama_barang }}">
+                                            @else
+                                                <div class="landing-carousel-card__placeholder">
+                                                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                                </div>
+                                            @endif
+                                            <span class="landing-chip landing-chip--lost">Hilang</span>
+                                        </div>
+                                        <div class="landing-carousel-card__body">
+                                            <h3>{{ $report->nama_barang }}</h3>
+                                            <p>{{ $report->lokasi }}</p>
+                                            <div class="landing-carousel-card__meta">
+                                                <span>{{ optional($report->category)->nama_category ?? 'Tanpa kategori' }}</span>
+                                                <span>{{ $report->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                            <div class="landing-carousel-dots" id="carousel-home-hilang-dots"></div>
+                        </div>
                     </div>
                 @else
                     <div class="landing-empty">
@@ -224,4 +294,200 @@
         </div>
     </section>
 </div>
+
+{{-- Landing Page Carousel Styles --}}
+<style>
+/* Landing Carousel Mobile Styles */
+.landing-carousel-wrapper {
+    overflow: hidden;
+    padding: 0 0 16px 0;
+    margin: 0 -16px;
+}
+
+.landing-carousel-track {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 16px 8px 16px;
+}
+
+.landing-carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.landing-carousel-card {
+    flex: 0 0 calc(75% - 12px);
+    scroll-snap-align: start;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+}
+
+.landing-carousel-card:active {
+    transform: scale(0.98);
+}
+
+.landing-carousel-card__media {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    background: var(--navy-pale, #f0f4ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.landing-carousel-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.landing-carousel-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.landing-carousel-card__placeholder svg {
+    width: 40px;
+    height: 40px;
+    stroke: var(--navy-mid, #3b82f6);
+    fill: none;
+    stroke-width: 1.5;
+    opacity: 0.5;
+}
+
+.landing-chip {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.landing-chip--found {
+    background: rgba(16, 185, 129, 0.9);
+    color: #fff;
+}
+
+.landing-chip--lost {
+    background: rgba(239, 68, 68, 0.9);
+    color: #fff;
+}
+
+.landing-carousel-card__body {
+    padding: 14px;
+}
+
+.landing-carousel-card__body h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text, #1f2937);
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.landing-carousel-card__body p {
+    font-size: 11px;
+    color: var(--text-2, #6b7280);
+    margin: 0 0 8px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.landing-carousel-card__meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-3, #9ca3af);
+}
+
+/* Dots Indicator */
+.landing-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.landing-carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.landing-carousel-dot.active {
+    background: var(--navy, #1e40af);
+    width: 20px;
+    border-radius: 4px;
+}
+</style>
+
+{{-- Landing Page Carousel Scripts --}}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initLandingCarousel('carousel-home-temuan', 'carousel-home-temuan-dots');
+    initLandingCarousel('carousel-home-hilang', 'carousel-home-hilang-dots');
+});
+
+function initLandingCarousel(trackId, dotsId) {
+    const track = document.getElementById(trackId);
+    const dotsContainer = document.getElementById(dotsId);
+    if (!track || !dotsContainer) return;
+
+    const cards = track.querySelectorAll('.landing-carousel-card');
+    const totalCards = cards.length;
+
+    if (totalCards <= 1) return;
+
+    // Create dots
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < totalCards; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'landing-carousel-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => scrollToCard(i));
+        dotsContainer.appendChild(dot);
+    }
+
+    const dots = dotsContainer.querySelectorAll('.landing-carousel-dot');
+
+    // Update dots on scroll
+    track.addEventListener('scroll', () => {
+        const scrollLeft = track.scrollLeft;
+        const cardWidth = cards[0].offsetWidth + 12;
+        const activeIndex = Math.round(scrollLeft / cardWidth);
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === activeIndex);
+        });
+    });
+
+    function scrollToCard(index) {
+        const cardWidth = cards[0].offsetWidth + 12;
+        track.scrollTo({
+            left: cardWidth * index,
+            behavior: 'smooth'
+        });
+    }
+}
+</script>
 </x-app-layout>
