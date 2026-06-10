@@ -46,7 +46,7 @@
                     {{-- Mobile Brand --}}
                     <div class="d-md-none text-center mb-4">
                         <div class="fw-bold fs-4" style="color:var(--navy);">Find<span style="color:var(--accent);">.It</span></div>
-                        <div style="font-size:11px;color:var(--text-2);">Campus Lost & Found System</div>
+                        <div style="font-size:14px;color:var(--text-2);">Campus Lost & Found System</div>
                     </div>
 
                     {{-- Flash --}}

@@ -80,7 +80,7 @@
                                 ✅ Klaim Disetujui!
                             </div>
                             <div style="font-size:11px;color:var(--text-2);">
-                                Hubungi admin kampus untuk pengambilan barang. Tunjukkan halaman ini sebagai bukti.
+                                Silakan datang ke admin kampus di lobby untuk pengambilan barang. Tunjukkan halaman ini sebagai bukti.
                             </div>
                         </div>
                     @elseif($claim->status_klaim === 'rejected')

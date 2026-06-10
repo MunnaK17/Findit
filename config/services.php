@@ -44,4 +44,32 @@ return [
     'model'   => env('GEMINI_MODEL', 'gemini-2.0-flash'),
 ],
 
+    'pusher' => [
+ 'app_id'       => env('PUSHER_APP_ID'),
+    'app_key'      => env('PUSHER_APP_KEY'),
+    'app_secret'   => env('PUSHER_APP_SECRET'),
+    'cluster'      => env('PUSHER_CLUSTER', 'ap1'),
+    'force_tls'    => true,
+    ],
+
+    'wa_fonnte' => [
+    'enabled'  => env('WA_FONNTE_ENABLED', false),
+    'api_key'  => env('WA_FONNTE_API_KEY'),
+    'sender'   => env('WA_FONNTE_SENDER'),
+    ],
+
+    'wa' => [
+    'enabled'      => env('WA_ENABLED', false),
+    'provider'     => env('WA_PROVIDER', 'twilio'),
+    'api_url'      => env('WA_API_URL'),
+    'instance_id'   => env('WA_INSTANCE_ID'),
+    'token'        => env('WA_TOKEN'),
+    ],
+
+    'twilio' => [
+    'account_sid'      => env('TWILIO_ACCOUNT_SID'),
+    'auth_token'       => env('TWILIO_AUTH_TOKEN'),
+    'whatsapp_from'    => env('TWILIO_WHATSAPP_FROM', 'whatsapp:+14155238886'),
+    ],
+
 ];

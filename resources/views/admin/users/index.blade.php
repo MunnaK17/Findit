@@ -18,7 +18,7 @@
                     </svg>
                     <input type="text" name="search"
                            value="{{ request('search') }}"
-                           placeholder="Cari nama, email, atau NIM...">
+                           placeholder="Cari nama, email, NIM, atau nomor HP...">
                 </div>
                 <select name="role" class="form-select" style="width:auto;">
                     <option value="">Semua Role</option>
@@ -41,6 +41,7 @@
                     <th>#</th>
                     <th>User</th>
                     <th>NIM</th>
+                    <th>No. HP</th>
                     <th>Role</th>
                     <th>Bergabung</th>
                     <th>Laporan</th>
@@ -65,6 +66,7 @@
                             </div>
                         </td>
                         <td style="font-size:12px;">{{ $user->nim ?? '-' }}</td>
+                        <td style="font-size:12px;">{{ $user->phone ?? '-' }}</td>
                         <td>
                             @if($user->role === 'admin')
                                 <span class="findit-badge b-navy">Admin</span>
@@ -95,7 +97,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" style="text-align:center;color:var(--text-3);padding:32px;">
+                        <td colspan="8" style="text-align:center;color:var(--text-3);padding:32px;">
                             Tidak ada user ditemukan
                         </td>
                     </tr>

@@ -27,7 +27,7 @@ class ReportController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('nama_barang', 'like', $search)
                   ->orWhere('deskripsi', 'like', $search)
-                  ->orWhere('lokasi', 'like', $search);
+                  ->orWhere('lokasi', 'like', $search); 
             });
         }
 

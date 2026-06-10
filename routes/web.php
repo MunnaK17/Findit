@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ClaimController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin;
 
 /*
@@ -12,8 +14,16 @@ use App\Http\Controllers\Admin;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('auth.login');
+Route::get('/', [HomeController::class, 'index']);
+
+// Test Email (remove saat production)
+Route::get('/test-email', function () {
+    $claim = \App\Models\Claim::first();
+    if (!$claim) {
+        return response()->json(['error' => 'No claim found'], 404);
+    }
+    $claim->user->notify(new \App\Notifications\ClaimStatusNotification($claim, $claim->report, 'approved'));
+    return response()->json(['sent' => true, 'email' => $claim->user->email]);
 });
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -22,6 +32,10 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/barang-hilang', [ReportController::class, 'hilang'])->name('reports.hilang');
 Route::get('/barang-temuan', [ReportController::class, 'temuan'])->name('reports.temuan');
 Route::get('/barang/{id}', [ReportController::class, 'show'])->name('reports.show');
+
+// Chatbot (public)
+Route::post('/chatbot', [App\Http\Controllers\ChatbotController::class, 'ask'])
+    ->name('chatbot.ask');
 
 /*
 |--------------------------------------------------------------------------
@@ -50,9 +64,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/klaim/{reportId}/ajukan', [ClaimController::class, 'store'])->middleware('throttle.claims')->name('claims.store');
     Route::delete('/klaim/{id}', [ClaimController::class, 'cancel'])->name('claims.cancel');
 
-    // Chatbot
-Route::post('/chatbot', [App\Http\Controllers\ChatbotController::class, 'ask'])
-    ->name('chatbot.ask');
+    // Notifications API
+    Route::get('/notifications/api', [NotificationController::class, 'apiIndex']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+    // Profil
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 /*
 |--------------------------------------------------------------------------
@@ -112,6 +133,9 @@ Route::middleware(['auth', 'admin'])
         ->name('categories.destroy');
 
 });
+
+// Compro Routes
+require __DIR__.'/compro.php';
 
 // Auth routes dari Breeze
 require __DIR__.'/auth.php'; 

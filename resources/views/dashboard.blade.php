@@ -55,23 +55,23 @@
     <div class="row g-3">
         <div class="col-md-6">
             <div class="findit-card p-4">
-                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">
+                <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">
                     Laporan Terbaru Saya
                 </div>
-                <div style="font-size:11px;color:var(--text-2);margin-bottom:16px;">
+                <div style="font-size:12px;color:var(--text-2);margin-bottom:17px;">
                     5 laporan terakhir yang kamu buat
                 </div>
 
                 @forelse(Auth::user()->reports()->with('category')->latest()->take(5)->get() as $report)
                     <div style="display:flex;align-items:center;justify-content:space-between;
-                                padding:10px 0;border-bottom:0.5px solid var(--border);">
+                                padding:11px 0;border-bottom:0.5px solid var(--border);">
                         <div>
-                            <div style="font-size:12px;font-weight:600;color:var(--text);">
+                            <div style="font-size:13px;font-weight:600;color:var(--text);">
                                 {{ $report->nama_barang }}
                             </div>
-                            <div style="font-size:10px;color:var(--text-3);margin-top:2px;">
+                            <div style="font-size:11px;color:var(--text-3);margin-top:3px;">
                                 {{ $report->category->nama_category }} ·
-                                {{ $report->tanggal_kejadian->format('d M Y') }}
+ {{ $report->tanggal_kejadian->format('d M Y') }}
                             </div>
                         </div>
                         <div class="d-flex align-items-center gap-2">
@@ -92,8 +92,8 @@
                         </div>
                     </div>
                 @empty
-                    <div style="text-align:center;padding:24px 0;color:var(--text-3);font-size:12px;">
-                        Belum ada laporan. 
+                    <div style="text-align:center;padding:26px 0;color:var(--text-3);font-size:13px;">
+                        Belum ada laporan.
                         <a href="{{ route('reports.create') }}" style="color:var(--navy);font-weight:700;">
                             Buat sekarang
                         </a>
@@ -102,8 +102,8 @@
 
                 @if(Auth::user()->reports()->count() > 0)
                     <a href="{{ route('my.reports') }}"
-                       style="display:block;text-align:center;margin-top:12px;
-                              font-size:11px;color:var(--navy);font-weight:700;text-decoration:none;">
+                       style="display:block;text-align:center;margin-top:13px;
+                              font-size:12px;color:var(--navy);font-weight:700;text-decoration:none;">
                         Lihat semua laporan →
                     </a>
                 @endif
@@ -112,60 +112,60 @@
 
         <div class="col-md-6">
             <div class="findit-card p-4">
-                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">
+                <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;">
                     Menu Cepat
                 </div>
-                <div style="font-size:11px;color:var(--text-2);margin-bottom:16px;">
+                <div style="font-size:12px;color:var(--text-2);margin-bottom:17px;">
                     Akses fitur utama FindIt
                 </div>
 
                 <div class="d-flex flex-column gap-2">
                     <a href="{{ route('reports.create') }}"
-                       style="display:flex;align-items:center;gap:12px;padding:12px;
+                       style="display:flex;align-items:center;gap:13px;padding:13px;
                               background:var(--navy-pale);border-radius:var(--r);
                               text-decoration:none;color:var(--text);transition:all .15s;">
-                        <div style="width:32px;height:32px;background:var(--navy);border-radius:8px;
+                        <div style="width:34px;height:34px;background:var(--navy);border-radius:9px;
                                     display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;">
+                            <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5;">
                                 <path d="M12 5v14M5 12h14"/>
                             </svg>
                         </div>
                         <div>
-                            <div style="font-size:12px;font-weight:700;">Buat Laporan</div>
-                            <div style="font-size:10px;color:var(--text-2);">Laporkan barang hilang atau temuan</div>
+                            <div style="font-size:13px;font-weight:700;">Buat Laporan</div>
+                            <div style="font-size:11px;color:var(--text-2);">Laporkan barang hilang atau temuan</div>
                         </div>
                     </a>
 
                     <a href="{{ route('reports.temuan') }}"
-                       style="display:flex;align-items:center;gap:12px;padding:12px;
+                       style="display:flex;align-items:center;gap:13px;padding:13px;
                               background:var(--navy-pale);border-radius:var(--r);
                               text-decoration:none;color:var(--text);transition:all .15s;">
-                        <div style="width:32px;height:32px;background:var(--success);border-radius:8px;
+                        <div style="width:34px;height:34px;background:var(--success);border-radius:9px;
                                     display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;">
+                            <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;">
                                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                             </svg>
                         </div>
                         <div>
-                            <div style="font-size:12px;font-weight:700;">Cari Barang Temuan</div>
-                            <div style="font-size:10px;color:var(--text-2);">Lihat daftar barang yang ditemukan</div>
+                            <div style="font-size:13px;font-weight:700;">Cari Barang Temuan</div>
+                            <div style="font-size:11px;color:var(--text-2);">Lihat daftar barang yang ditemukan</div>
                         </div>
                     </a>
 
                     <a href="{{ route('my.claims') }}"
-                       style="display:flex;align-items:center;gap:12px;padding:12px;
+                       style="display:flex;align-items:center;gap:13px;padding:13px;
                               background:var(--navy-pale);border-radius:var(--r);
                               text-decoration:none;color:var(--text);transition:all .15s;">
-                        <div style="width:32px;height:32px;background:var(--accent);border-radius:8px;
+                        <div style="width:34px;height:34px;background:var(--accent);border-radius:9px;
                                     display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--navy);fill:none;stroke-width:2;">
+                            <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--navy);fill:none;stroke-width:2;">
                                 <path d="M9 11l3 3L22 4"/>
                                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                             </svg>
                         </div>
                         <div>
-                            <div style="font-size:12px;font-weight:700;">Klaim Saya</div>
-                            <div style="font-size:10px;color:var(--text-2);">Lihat status pengajuan klaim</div>
+                            <div style="font-size:13px;font-weight:700;">Klaim Saya</div>
+                            <div style="font-size:11px;color:var(--text-2);">Lihat status pengajuan klaim</div>
                         </div>
                     </a>
                 </div>

@@ -4,8 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Claim;
 use App\Models\Report;
+use App\Models\User;
+use App\Events\ClaimSubmittedEvent;
+use App\Events\ClaimStatusEvent;
+use App\Notifications\ClaimSubmittedNotification;
+use App\Notifications\ClaimStatusNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class ClaimController extends Controller
 {
@@ -63,13 +69,28 @@ class ClaimController extends Controller
             'pesan_klaim' => ['required', 'string', 'min:20', 'max:1000'],
         ]);
 
-        Claim::create([
+        $claim = Claim::create([
             'id_report'    => $reportId,
             'id_user'      => Auth::id(),
             'pesan_klaim'  => $request->pesan_klaim,
             'status_klaim' => 'pending',
             'tanggal_klaim' => now()->toDateString(),
         ]);
+
+        // Load relasi
+        $claim->load('user', 'report');
+
+        // Notifikasi ke semua admin (database + broadcast realtime)
+        $admins = User::where('role', 'admin')->get();
+        Notification::send($admins, new ClaimSubmittedNotification($claim, $claim->report));
+        ClaimSubmittedEvent::dispatch($claim, $claim->report);
+
+        // Notifikasi ke user (email + WA) — langsung sync, tanpa queue
+        try {
+            $claim->user->notify(new ClaimStatusNotification($claim, $claim->report, 'pending'));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal kirim ClaimStatusNotification: ' . $e->getMessage());
+        }
 
         return redirect()->route('my.claims')
             ->with('success', 'Klaim berhasil diajukan! Menunggu verifikasi admin.');

@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Claim;
 use App\Models\Report;
+use App\Models\User;
+use App\Events\ClaimStatusEvent;
+use App\Notifications\ClaimStatusNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class ClaimController extends Controller
 {
@@ -33,7 +37,7 @@ class ClaimController extends Controller
     // Approve klaim → otomatis set report jadi completed
     public function approve($id)
     {
-        $claim = Claim::with('report')->findOrFail($id);
+        $claim = Claim::with('user', 'report')->findOrFail($id);
 
         $claim->update(['status_klaim' => 'approved']);
 
@@ -46,15 +50,31 @@ class ClaimController extends Controller
             ->where('status_klaim', 'pending')
             ->update(['status_klaim' => 'rejected']);
 
+        // Notifikasi ke user yang klaim (database + WA via ClaimStatusNotification->via())
+        $claim->user->notify(new ClaimStatusNotification($claim, $claim->report, 'approved'));
+        ClaimStatusEvent::dispatch($claim, $claim->report, 'approved');
+
         return redirect()->back()
             ->with('success', 'Klaim disetujui. Laporan otomatis ditandai selesai.');
     }
 
     // Reject klaim
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
-        $claim = Claim::findOrFail($id);
-        $claim->update(['status_klaim' => 'rejected']);
+        $claim = Claim::with('user', 'report')->findOrFail($id);
+
+        $claim->update([
+            'status_klaim' => 'rejected',
+        ]);
+
+        // Notifikasi ke user yang klaim
+        $claim->user->notify(new ClaimStatusNotification(
+            $claim,
+            $claim->report,
+            'rejected',
+            $request->input('admin_note')
+        ));
+        ClaimStatusEvent::dispatch($claim, $claim->report, 'rejected');
 
         return redirect()->back()
             ->with('success', 'Klaim berhasil di-reject.');

@@ -100,7 +100,7 @@ class ReportController extends Controller
             'deskripsi'        => ['required', 'string', 'min:20'],
             'lokasi'           => ['required', 'string', 'max:255'],
             'tanggal_kejadian' => ['required', 'date', 'before_or_equal:today'],
-            'foto_barang'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'min:10kb', 'max:2048', 'dimensions:min_width=100,min_height=100'],
+            'foto_barang'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'min:10', 'max:2048', 'dimensions:min_width=100,min_height=100'],
         ]);
 
         $fotoPath = null;
@@ -174,7 +174,7 @@ class ReportController extends Controller
             'deskripsi'        => ['required', 'string', 'min:20'],
             'lokasi'           => ['required', 'string', 'max:255'],
             'tanggal_kejadian' => ['required', 'date', 'before_or_equal:today'],
-            'foto_barang'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'min:10kb', 'max:2048', 'dimensions:min_width=100,min_height=100'],
+            'foto_barang'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'min:10', 'max:2048', 'dimensions:min_width=100,min_height=100'],
         ]);
 
         $fotoPath = $report->foto_barang;

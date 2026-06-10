@@ -85,8 +85,14 @@
                             ✅ Approve Klaim
                         </button>
                     </form>
-                    <form method="POST" action="{{ route('admin.claims.reject', $claim->id) }}">
+                    <form method="POST" action="{{ route('admin.claims.reject', $claim->id) }}" class="mb-2">
                         @csrf @method('PATCH')
+                        <div style="margin-bottom:8px;">
+                            <textarea name="admin_note" rows="2"
+                                      style="width:100%;border:0.5px solid var(--border);border-radius:var(--r);
+                                             padding:8px 10px;font-size:11px;resize:none;outline:none;"
+                                      placeholder="Catatan untuk penolakan (opsional)"></textarea>
+                        </div>
                         <button type="submit" class="btn w-100 py-2"
                                 style="background:var(--danger-light);color:var(--danger);border:0.5px solid rgba(220,38,38,0.2);font-size:12px;font-weight:700;border-radius:var(--r);">
                             ❌ Reject Klaim
