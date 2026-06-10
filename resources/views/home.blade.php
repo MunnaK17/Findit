@@ -95,7 +95,7 @@
                             <a href="{{ route('reports.show', $report->id) }}" class="landing-item-card">
                                 <div class="landing-item-card__media">
                                     @if($imageFor($report))
-                                        <img src="{{ $imageFor($report) }}" alt="{{ $report->nama_barang }}">
+                                        <img src="{{ $imageFor($report) }}" class="lightbox-img" alt="{{ $report->nama_barang }}">
                                     @else
                                         <div class="landing-item-card__placeholder">
                                             <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -137,7 +137,7 @@
                             <a href="{{ route('reports.show', $report->id) }}" class="landing-item-card">
                                 <div class="landing-item-card__media">
                                     @if($imageFor($report))
-                                        <img src="{{ $imageFor($report) }}" alt="{{ $report->nama_barang }}">
+                                        <img src="{{ $imageFor($report) }}" class="lightbox-img" alt="{{ $report->nama_barang }}">
                                     @else
                                         <div class="landing-item-card__placeholder">
                                             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>

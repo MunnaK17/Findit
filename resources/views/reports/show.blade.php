@@ -21,6 +21,7 @@
             <div class="findit-card mb-3" style="overflow:hidden;">
                 @if($report->foto_barang)
                     <img src="{{ asset('storage/'.$report->foto_barang) }}"
+                         class="lightbox-img"
                          style="width:100%;max-height:320px;object-fit:cover;">
                 @else
                     <div style="height:200px;background:var(--navy-pale);display:flex;

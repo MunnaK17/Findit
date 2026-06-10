@@ -51,7 +51,8 @@
                         <div class="item-card-img">
                             @if($report->foto_barang)
                                 <img src="{{ asset('storage/'.$report->foto_barang) }}"
-                                     style="width:100%;height:100%;object-fit:cover;">
+                                     class="lightbox-img"
+                                     alt="{{ $report->nama_barang }}">
                             @else
                                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                             @endif

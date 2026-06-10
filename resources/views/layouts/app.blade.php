@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 
 <body style="display:flex;flex-direction:column;min-height:100vh;">
@@ -225,6 +226,9 @@
     }
     </script>
 
+    {{-- Lightbox Component --}}
+    <x-lightbox />
+
     {{-- Toast Notification Container --}}
     <div id="toast-container"
          style="position:fixed;top:16px;right:16px;z-index:99999;
@@ -255,6 +259,7 @@
         }, 4000);
     };
     </script>
+    @stack('scripts')
 
 </body>
 </html>

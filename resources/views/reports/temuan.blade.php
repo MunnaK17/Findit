@@ -51,7 +51,30 @@
                         <div class="item-card-img">
                             @if($report->foto_barang)
                                 <img src="{{ asset('storage/'.$report->foto_barang) }}"
-                                     style="width:100%;height:100%;object-fit:cover;">
+                                     class="lightbox-img"
+                                     alt="{{ $report->nama_barang }}">
+                            @else
+                                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                            @endif
+                        </div>
+                        <div class="item-card-body">
+                            <div class="item-card-name">{{ $report->nama_barang }}</div>
+                            <div class="item-card-loc">📍 {{ $report->lokasi }}</div>
+                            <div style="font-size:10px;color:var(--text-3);margin-bottom:6px;">
+                                {{ $report->category->nama_category }} ·
+                                {{ $report->tanggal_kejadian->format('d M Y') }}
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="findit-badge b-green">Temuan</span>
+                                <span style="font-size:10px;color:var(--text-3);">
+                                    {{ $report->created_at->diffForHumans() }}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+        </div>
                             @else
                                 <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                             @endif

@@ -24,6 +24,7 @@
                                         justify-content:center;flex-shrink:0;overflow:hidden;">
                                 @if($claim->report->foto_barang)
                                     <img src="{{ asset('storage/'.$claim->report->foto_barang) }}"
+                                         class="lightbox-img"
                                          style="width:100%;height:100%;object-fit:cover;">
                                 @else
                                     <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--navy-mid);fill:none;stroke-width:1.8;">
