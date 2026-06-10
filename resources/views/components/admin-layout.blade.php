@@ -21,14 +21,28 @@
         {{-- Main Area --}}
         <div class="flex-grow-1" style="min-height:100vh;overflow-x:hidden;">
 
-            {{-- Topbar — hanya avatar + dropdown, TANPA logo --}}
+            {{-- Topbar — hamburger + avatar + dropdown --}}
             <div style="height:56px;background:var(--bg2);border-bottom:0.5px solid var(--border);
                         display:flex;align-items:center;justify-content:space-between;
                         padding:0 24px;position:sticky;top:0;z-index:100;">
 
-                {{-- Judul halaman --}}
-                <div style="font-size:13px;font-weight:600;color:var(--text-2);">
-                    {{ $title }}
+                {{-- Left side: Hamburger (mobile) + Page title --}}
+                <div class="d-flex align-items-center gap-2">
+                    {{-- Hamburger Button (Mobile only) --}}
+                    <button class="sidebar-hamburger d-md-none" title="Menu"
+                            style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+                                   background:none;border:none;border-radius:8px;cursor:pointer;color:var(--text);">
+                        <svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;">
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
+
+                    {{-- Judul halaman --}}
+                    <div style="font-size:13px;font-weight:600;color:var(--text-2);">
+                        {{ $title }}
+                    </div>
                 </div>
 
                 {{-- Avatar + Dropdown --}}
