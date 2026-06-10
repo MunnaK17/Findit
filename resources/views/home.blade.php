@@ -306,7 +306,7 @@
 
 .landing-carousel-track {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
@@ -320,26 +320,27 @@
 }
 
 .landing-carousel-card {
-    flex: 0 0 calc(75% - 12px);
+    flex: 0 0 calc(70% - 10px);
     scroll-snap-align: start;
     background: #fff;
-    border-radius: 16px;
+    border-radius: 14px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 0.5px solid rgba(0,0,0,0.06);
     transition: transform 0.2s ease;
 }
 
 .landing-carousel-card:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
 }
 
 .landing-carousel-card__media {
     position: relative;
     width: 100%;
-    height: 140px;
-    background: var(--navy-pale, #f0f4ff);
+    height: 130px;
+    background: #f8f9fa;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -361,12 +362,12 @@
 }
 
 .landing-carousel-card__placeholder svg {
-    width: 40px;
-    height: 40px;
-    stroke: var(--navy-mid, #3b82f6);
+    width: 36px;
+    height: 36px;
+    stroke: #6b7280;
     fill: none;
     stroke-width: 1.5;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .landing-chip {
@@ -390,14 +391,14 @@
 }
 
 .landing-carousel-card__body {
-    padding: 14px;
+    padding: 12px 14px 14px 14px;
 }
 
 .landing-carousel-card__body h3 {
     font-size: 14px;
     font-weight: 700;
-    color: var(--text, #1f2937);
-    margin: 0 0 4px 0;
+    color: #1f2937;
+    margin: 0 0 5px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -405,7 +406,7 @@
 
 .landing-carousel-card__body p {
     font-size: 11px;
-    color: var(--text-2, #6b7280);
+    color: #6b7280;
     margin: 0 0 8px 0;
     white-space: nowrap;
     overflow: hidden;
@@ -416,7 +417,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 10px;
-    color: var(--text-3, #9ca3af);
+    color: #9ca3af;
 }
 
 /* Dots Indicator */
@@ -424,20 +425,20 @@
     display: flex;
     justify-content: center;
     gap: 6px;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .landing-carousel-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: rgba(0,0,0,0.15);
+    background: #d1d5db;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
 .landing-carousel-dot.active {
-    background: var(--navy, #1e40af);
+    background: #059669;
     width: 20px;
     border-radius: 4px;
 }

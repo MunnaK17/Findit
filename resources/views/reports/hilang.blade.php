@@ -88,8 +88,7 @@
                             <div class="carousel-card-img">
                                 @if($report->foto_barang)
                                     <img src="{{ asset('storage/'.$report->foto_barang) }}"
-                                         alt="{{ $report->nama_barang }}"
-                                         style="width:100%;height:100%;object-fit:cover;">
+                                         alt="{{ $report->nama_barang }}">
                                 @else
                                     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                                 @endif
@@ -97,13 +96,12 @@
                             <div class="carousel-card-body">
                                 <div class="carousel-card-name">{{ $report->nama_barang }}</div>
                                 <div class="carousel-card-loc">📍 {{ $report->lokasi }}</div>
-                                <div style="font-size:9px;color:var(--text-3);margin-bottom:4px;">
-                                    {{ $report->category->nama_category }} ·
-                                    {{ $report->tanggal_kejadian->format('d M Y') }}
+                                <div class="carousel-card-date">
+                                    {{ $report->category->nama_category }} · {{ $report->tanggal_kejadian->format('d M Y') }}
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="findit-badge b-red">Hilang</span>
-                                    <span style="font-size:9px;color:var(--text-3);">
+                                    <span style="font-size:9px;color:#9ca3af;">
                                         {{ $report->created_at->diffForHumans() }}
                                     </span>
                                 </div>
@@ -144,13 +142,13 @@
 
 .carousel-track {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-bottom: 8px;
+    padding: 0 16px 8px 16px;
 }
 
 .carousel-track::-webkit-scrollbar {
@@ -158,61 +156,74 @@
 }
 
 .carousel-card {
-    flex: 0 0 calc(75% - 12px);
+    flex: 0 0 calc(70% - 10px);
     scroll-snap-align: start;
     background: #fff;
-    border-radius: 12px;
-    border: 0.5px solid var(--border);
+    border-radius: 14px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 0.5px solid rgba(0,0,0,0.06);
+    transition: transform 0.2s ease;
 }
 
 .carousel-card:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
 }
 
 .carousel-card-img {
     width: 100%;
-    height: 140px;
-    background: var(--navy-pale);
+    height: 130px;
+    background: #f8f9fa;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
 }
 
+.carousel-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .carousel-card-img svg {
-    width: 32px;
-    height: 32px;
-    stroke: var(--navy-mid);
+    width: 36px;
+    height: 36px;
+    stroke: #dc2626;
     fill: none;
     stroke-width: 1.5;
+    opacity: 0.6;
 }
 
 .carousel-card-body {
-    padding: 12px;
+    padding: 12px 14px 14px 14px;
 }
 
 .carousel-card-name {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
+    color: #1f2937;
+    margin-bottom: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .carousel-card-loc {
-    font-size: 10px;
-    color: var(--text-2);
-    margin-bottom: 6px;
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.carousel-card-date {
+    font-size: 10px;
+    color: #9ca3af;
+    margin-bottom: 10px;
 }
 
 /* Dots Indicator */
@@ -220,20 +231,20 @@
     display: flex;
     justify-content: center;
     gap: 6px;
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .carousel-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--border);
+    background: #d1d5db;
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
 .carousel-dot.active {
-    background: var(--navy);
+    background: #059669;
     width: 20px;
     border-radius: 4px;
 }
