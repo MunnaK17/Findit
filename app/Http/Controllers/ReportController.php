@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use App\Models\Category;
+use App\Notifications\ReportSubmittedNotification;
 use App\Services\MathCaptchaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
@@ -126,7 +128,7 @@ class ReportController extends Controller
             $fotoPath = $request->file('foto_barang')->store('foto_barang', 'public');
         }
 
-        Report::create([
+        $report = Report::create([
             'id_user'          => Auth::id(),
             'id_category'      => $request->id_category,
             'jenis_laporan'    => $request->jenis_laporan,
@@ -137,6 +139,13 @@ class ReportController extends Controller
             'foto_barang'      => $fotoPath,
             'status'           => 'pending',
         ]);
+
+        // Notifikasi ke user (email + database)
+        try {
+            $report->user->notify(new ReportSubmittedNotification($report, $request->jenis_laporan));
+        } catch (\Throwable $e) {
+            Log::error('Gagal kirim ReportSubmittedNotification: ' . $e->getMessage());
+        }
 
         return redirect()->route('my.reports')
             ->with('success', 'Laporan berhasil dikirim! Menunggu verifikasi admin.');

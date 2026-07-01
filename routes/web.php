@@ -26,6 +26,29 @@ Route::get('/test-email', function () {
     return response()->json(['sent' => true, 'email' => $claim->user->email]);
 });
 
+// Test Report Email (remove saat production)
+Route::get('/test-report-email', function (\Illuminate\Http\Request $request) {
+    // Ambil report terbaru atau spesifik via ?report_id=
+    $report = $request->report_id
+        ? \App\Models\Report::find($request->report_id)
+        : \App\Models\Report::latest()->first();
+
+    if (!$report) {
+        return response()->json(['error' => 'No report found'], 404);
+    }
+
+    // Kirim notifikasi
+    $report->user->notify(new \App\Notifications\ReportSubmittedNotification($report, $report->jenis_laporan));
+
+    return response()->json([
+        'sent' => true,
+        'email' => $report->user->email,
+        'jenis' => $report->jenis_laporan,
+        'report_id' => $report->id,
+        'user_name' => $report->user->name,
+    ]);
+});
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Barang hilang & temuan (public)
