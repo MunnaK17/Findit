@@ -82,6 +82,23 @@
                         </ul>
                     </div>
 
+                    {{-- Captcha --}}
+                    <div style="background:#f0f4f8;padding:12px 15px;border-radius:8px;margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:18px;font-weight:700;color:var(--navy);">
+                            {{ $captcha_question ?? session('captcha_question') ?? 'Refresh halaman untuk muat captcha' }}
+                        </span>
+                    </div>
+                    <input type="number"
+                           name="captcha_answer"
+                           class="form-control @error('captcha_answer') is-invalid @enderror"
+                           placeholder="Ketik jawaban di sini"
+                           min="0"
+                           max="18"
+                           style="max-width:200px;margin-bottom:16px;">
+                    @error('captcha_answer')
+                        <div style="font-size:11px;color:var(--danger);margin-bottom:16px;">{{ $message }}</div>
+                    @enderror
+
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-navy px-5 py-2">
                             Ajukan Klaim

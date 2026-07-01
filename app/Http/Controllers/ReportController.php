@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use App\Models\Category;
+use App\Services\MathCaptchaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -86,13 +87,21 @@ class ReportController extends Controller
     // Form buat laporan (auth)
     public function create()
     {
+        $captchaService = app(MathCaptchaService::class);
+        $captcha = $captchaService->generate();
+
         $categories = Category::all();
-        return view('reports.create', compact('categories'));
+        return view('reports.create', [
+            'categories' => $categories,
+            'captcha_question' => $captcha['question'],
+        ]);
     }
 
     // Simpan laporan (auth)
     public function store(Request $request)
     {
+        $captchaService = app(MathCaptchaService::class);
+
         $request->validate([
             'id_category'      => ['required', 'exists:categories,id'],
             'jenis_laporan'    => ['required', 'in:hilang,temuan'],
@@ -101,7 +110,16 @@ class ReportController extends Controller
             'lokasi'           => ['required', 'string', 'max:255'],
             'tanggal_kejadian' => ['required', 'date', 'before_or_equal:today'],
             'foto_barang'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'min:10', 'max:2048', 'dimensions:min_width=100,min_height=100'],
+            'captcha_answer'   => ['required', 'integer', 'min:0', 'max:18'],
         ]);
+
+        // Validate captcha
+        if (!$captchaService->validate((int) $request->captcha_answer)) {
+            return back()
+                ->withInput($request->except('captcha_answer'))
+                ->withErrors(['captcha_answer' => 'Jawaban captcha salah. Silakan coba lagi.'])
+                ->with(['captcha_question' => $captchaService->generate()['question']]);
+        }
 
         $fotoPath = null;
         if ($request->hasFile('foto_barang')) {

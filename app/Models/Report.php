@@ -74,4 +74,26 @@ class Report extends Model
             default   => '<span class="badge bg-secondary">-</span>',
         };
     }
+
+    // Helper: priority badge dari category
+    public function priorityBadge(): string
+    {
+        return match($this->category?->priority) {
+            'critical' => '<span class="findit-badge" style="background:#fee2e2;color:#dc2626;">🔴 Critical</span>',
+            'high' => '<span class="findit-badge" style="background:#fef3c7;color:#d97706;">🟡 High</span>',
+            'normal' => '<span class="findit-badge" style="background:#d1fae5;color:#059669;">🟢 Normal</span>',
+            default => '<span class="findit-badge">-</span>',
+        };
+    }
+
+    // Helper: priority badge small (untuk table)
+    public function priorityBadgeSmall(): string
+    {
+        return match($this->category?->priority) {
+            'critical' => '<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;">🔴 Critical</span>',
+            'high' => '<span style="background:#fef3c7;color:#d97706;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;">🟡 High</span>',
+            'normal' => '<span style="background:#d1fae5;color:#059669;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;">🟢 Normal</span>',
+            default => '<span style="color:#9ca3af;font-size:10px;">-</span>',
+        };
+    }
 }

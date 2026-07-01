@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Services\MathCaptchaService;
 
 class LoginRequest extends FormRequest
 {
@@ -30,7 +31,35 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'captcha_answer' => ['required', 'integer', 'min:0', 'max:18'],
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if (!$this->validateCaptcha()) {
+                $validator->errors()->add('captcha_answer', 'Jawaban captcha salah. Silakan coba lagi.');
+            }
+        });
+    }
+
+    /**
+     * Validate the math captcha answer.
+     */
+    protected function validateCaptcha(): bool
+    {
+        $captchaService = app(MathCaptchaService::class);
+        $answer = $this->input('captcha_answer');
+
+        if ($answer === null || $answer === '') {
+            return false;
+        }
+
+        return $captchaService->validate((int) $answer);
     }
 
     /**

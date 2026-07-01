@@ -28,6 +28,23 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prioritas</label>
+                        <select name="priority" class="form-select @error('priority') is-invalid @enderror">
+                            <option value="critical" {{ old('priority') === 'critical' ? 'selected' : '' }}>
+                                🔴 Critical - Barang sangat penting
+                            </option>
+                            <option value="high" {{ old('priority') === 'high' ? 'selected' : '' }}>
+                                🟡 High - Barang cukup penting
+                            </option>
+                            <option value="normal" {{ old('priority') === 'normal' ? 'selected' : '' }}>
+                                🟢 Normal - Barang biasa
+                            </option>
+                        </select>
+                        @error('priority')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <button type="submit" class="btn btn-navy w-100 py-2">
                         + Tambah Kategori
                     </button>
@@ -49,6 +66,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nama Kategori</th>
+                                <th>Prioritas</th>
                                 <th>Jumlah Laporan</th>
                                 <th>Aksi</th>
                             </tr>
@@ -59,6 +77,9 @@
                                     <td style="color:var(--text-3);">{{ $category->id }}</td>
                                     <td style="font-size:12px;font-weight:600;">
                                         {{ $category->nama_category }}
+                                    </td>
+                                    <td>
+                                        {!! $category->priorityBadge() !!}
                                     </td>
                                     <td>
                                         <span class="findit-badge b-navy">
@@ -88,7 +109,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" style="text-align:center;color:var(--text-3);padding:32px;">
+                                    <td colspan="5" style="text-align:center;color:var(--text-3);padding:32px;">
                                         Belum ada kategori
                                     </td>
                                 </tr>

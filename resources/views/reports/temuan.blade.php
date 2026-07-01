@@ -63,11 +63,10 @@
                                 <div class="item-card-name">{{ $report->nama_barang }}</div>
                                 <div class="item-card-loc">📍 {{ $report->lokasi }}</div>
                                 <div style="font-size:10px;color:var(--text-3);margin-bottom:6px;">
-                                    {{ $report->category->nama_category }} ·
+                                    {{ $report->category->nama_category ?? 'Tanpa kategori' }} ·
                                     {{ $report->tanggal_kejadian->format('d M Y') }}
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="findit-badge b-green">Temuan</span>
                                     <span style="font-size:10px;color:var(--text-3);">
                                         {{ $report->created_at->diffForHumans() }}
                                     </span>
@@ -92,13 +91,12 @@
                                 @else
                                     <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                                 @endif
-                                <span class="carousel-badge carousel-badge--found">Temuan</span>
                             </div>
                             <div class="carousel-card-body">
                                 <div class="carousel-card-name">{{ $report->nama_barang }}</div>
                                 <div class="carousel-card-loc">📍 {{ $report->lokasi }}</div>
                                 <div class="carousel-card-date">
-                                    {{ $report->category->nama_category }} · {{ $report->tanggal_kejadian->format('d M Y') }}
+                                    {{ $report->category->nama_category ?? 'Tanpa kategori' }} · {{ $report->tanggal_kejadian->format('d M Y') }}
                                 </div>
                                 <div class="carousel-card-time">
                                     {{ $report->created_at->diffForHumans() }}

@@ -146,6 +146,29 @@
                     </div>
                 </div>
 
+                {{-- Captcha --}}
+                <div class="findit-card p-4 mb-4">
+                    <div style="font-size:11px;font-weight:700;color:var(--text-3);
+                                text-transform:uppercase;letter-spacing:0.07em;margin-bottom:14px;">
+                        Verifikasi
+                    </div>
+                    <div style="background:#f0f4f8;padding:12px 15px;border-radius:8px;margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:18px;font-weight:700;color:var(--navy);">
+                            {{ $captcha_question ?? session('captcha_question') ?? 'Refresh halaman untuk muat captcha' }}
+                        </span>
+                    </div>
+                    <input type="number"
+                           name="captcha_answer"
+                           class="form-control @error('captcha_answer') is-invalid @enderror"
+                           placeholder="Ketik jawaban di sini"
+                           min="0"
+                           max="18"
+                           style="max-width:200px;">
+                    @error('captcha_answer')
+                        <div style="font-size:11px;color:var(--danger);margin-top:6px;">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-navy px-5 py-2">
                         Kirim Laporan

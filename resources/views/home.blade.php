@@ -295,6 +295,84 @@
             @endif
         </div>
     </section>
+
+    {{-- FAQ Section --}}
+    <section class="landing-faq">
+        <div class="landing-container">
+            <div class="landing-faq__intro">
+                <span>Pertanyaan Umum</span>
+                <h2>Ada Pertanyaan? Kami Jawab!</h2>
+                <p>Temukan jawaban untuk pertanyaan yang sering diajukan tentang FindIt.</p>
+            </div>
+
+            <div class="landing-faq__list">
+                {{-- FAQ Item 1 --}}
+                <details class="landing-faq__item">
+                    <summary class="landing-faq__question">
+                        <span>Bagaimana cara melaporkan barang yang saya temukan?</span>
+                        <svg class="landing-faq__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </summary>
+                    <div class="landing-faq__answer">
+                        <p>Jika Anda menemukan barang milik orang lain, klik tombol "Buat Laporan" di halaman utama. Pilih opsi "Saya Menemukan", isi detail barang seperti nama, kategori, lokasi temuan, dan tanggal kejadian. Setelah submit, laporan Anda akan diverifikasi oleh admin sebelum ditampilkan.</p>
+                    </div>
+                </details>
+
+                {{-- FAQ Item 2 --}}
+                <details class="landing-faq__item">
+                    <summary class="landing-faq__question">
+                        <span>Apakah laporan saya dijamin aman?</span>
+                        <svg class="landing-faq__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </summary>
+                    <div class="landing-faq__answer">
+                        <p>Ya! Setiap laporan diverifikasi oleh admin sebelum dipublikasikan. Kami juga tidak mempublikasikan data pribadi Anda (nama, NIM, nomor HP) secara terbuka. Data hanya dibagikan kepada pihak yang berhak setelah klaim mereka diverifikasi.</p>
+                    </div>
+                </details>
+
+                {{-- FAQ Item 3 --}}
+                <details class="landing-faq__item">
+                    <summary class="landing-faq__question">
+                        <span>Berapa lama proses verifikasi klaim?</span>
+                        <svg class="landing-faq__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </summary>
+                    <div class="landing-faq__answer">
+                        <p>Proses verifikasi klaim biasanya memakan waktu 1x24 jam. Admin akan memeriksa detail klaim Anda dan menghubungi pihak yang menemukan barang. Setelah diverifikasi, Anda akan mendapat notifikasi melalui email dan WhatsApp.</p>
+                    </div>
+                </details>
+
+                {{-- FAQ Item 4 --}}
+                <details class="landing-faq__item">
+                    <summary class="landing-faq__question">
+                        <span>Bagaimana cara mengklaim barang yang saya temukan?</span>
+                        <svg class="landing-faq__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </summary>
+                    <div class="landing-faq__answer">
+                        <p>Jika Anda kehilangan barang, buka halaman "Barang Hilang" dan cari barang Anda. Klik detail barang, lalu pilih "Klaim Barang". Isikan pesan yang menjelaskan secara detail mengapa barang ini milik Anda (ciri khusus, tanggal kehilangan, isi barang, dll). Admin akan memverifikasi klaim Anda.</p>
+                    </div>
+                </details>
+
+                {{-- FAQ Item 5 --}}
+                <details class="landing-faq__item">
+                    <summary class="landing-faq__question">
+                        <span>Apakah data pribadi saya aman di FindIt?</span>
+                        <svg class="landing-faq__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </summary>
+                    <div class="landing-faq__answer">
+                        <p>Kami sangat menjaga privasi Anda. Data pribadi seperti nama, NIM, dan nomor HP hanya digunakan untuk keperluan verifikasi klaim dan komunikasi terkait barang. Data tidak akan dibagikan ke pihak ketiga yang tidak berkepentingan.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
 </div>
 
 {{-- Landing Page Carousel Styles --}}
@@ -450,6 +528,133 @@
     background: #059669;
     width: 20px;
     border-radius: 4px;
+}
+
+/* ========== FAQ Section ========== */
+.landing-faq {
+    padding: 80px 0;
+    background: #f8fafc;
+}
+
+.landing-faq__intro {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.landing-faq__intro span {
+    display: inline-block;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+}
+
+.landing-faq__intro h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1f2937;
+    margin: 0 0 12px 0;
+}
+
+.landing-faq__intro p {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.landing-faq__list {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.landing-faq__item {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.landing-faq__item:hover {
+    border-color: #059669;
+    box-shadow: 0 2px 12px rgba(5, 150, 105, 0.08);
+}
+
+.landing-faq__item[open] {
+    border-color: #059669;
+}
+
+.landing-faq__question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    font-size: 15px;
+    color: #1f2937;
+    gap: 16px;
+}
+
+.landing-faq__question::-webkit-details-marker {
+    display: none;
+}
+
+.landing-faq__question span {
+    flex: 1;
+}
+
+.landing-faq__icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: #6b7280;
+}
+
+.landing-faq__item[open] .landing-faq__icon {
+    transform: rotate(180deg);
+    color: #059669;
+}
+
+.landing-faq__answer {
+    padding: 0 20px 20px 20px;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 0;
+}
+
+.landing-faq__answer p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #4b5563;
+    margin: 16px 0 0 0;
+    padding-top: 16px;
+}
+
+/* Responsive FAQ */
+@media (max-width: 768px) {
+    .landing-faq {
+        padding: 48px 0;
+    }
+    .landing-faq__intro h2 {
+        font-size: 24px;
+    }
+    .landing-faq__question {
+        font-size: 14px;
+        padding: 14px 16px;
+    }
+    .landing-faq__answer {
+        padding: 0 16px 16px 16px;
+    }
 }
 </style>
 

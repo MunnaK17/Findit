@@ -9,6 +9,7 @@ use App\Events\ClaimSubmittedEvent;
 use App\Events\ClaimStatusEvent;
 use App\Notifications\ClaimSubmittedNotification;
 use App\Notifications\ClaimStatusNotification;
+use App\Services\MathCaptchaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -38,12 +39,21 @@ class ClaimController extends Controller
                 ->with('error', 'Kamu tidak bisa mengklaim laporan milikmu sendiri.');
         }
 
-        return view('claims.create', compact('report'));
+        // Generate captcha
+        $captchaService = app(MathCaptchaService::class);
+        $captcha = $captchaService->generate();
+
+        return view('claims.create', [
+            'report' => $report,
+            'captcha_question' => $captcha['question'],
+        ]);
     }
 
     // Simpan klaim
     public function store(Request $request, $reportId)
     {
+        $captchaService = app(MathCaptchaService::class);
+
         $report = Report::where('jenis_laporan', 'temuan')
             ->where('status', 'approved')
             ->findOrFail($reportId);
@@ -67,7 +77,16 @@ class ClaimController extends Controller
 
         $request->validate([
             'pesan_klaim' => ['required', 'string', 'min:20', 'max:1000'],
+            'captcha_answer' => ['required', 'integer', 'min:0', 'max:18'],
         ]);
+
+        // Validate captcha
+        if (!$captchaService->validate((int) $request->captcha_answer)) {
+            return back()
+                ->withInput($request->except('captcha_answer'))
+                ->withErrors(['captcha_answer' => 'Jawaban captcha salah. Silakan coba lagi.'])
+                ->with(['captcha_question' => $captchaService->generate()['question']]);
+        }
 
         $claim = Claim::create([
             'id_report'    => $reportId,

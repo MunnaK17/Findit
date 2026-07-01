@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\MathCaptchaService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,25 +17,42 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        return view('auth.login');
+        $captchaService = app(MathCaptchaService::class);
+        $captcha = $captchaService->generate();
+
+        return view('auth.login', [
+            'captcha_question' => $captcha['question'],
+        ]);
     }
 
     /**
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-{
-    $request->authenticate();
+    {
+        $captchaService = app(MathCaptchaService::class);
 
-    $request->session()->regenerate();
+        try {
+            $request->authenticate();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Regenerate captcha on validation error
+            $captcha = $captchaService->generate();
 
-    // Redirect berdasarkan role
-    if (auth()->user()->role === 'admin') {
-        return redirect()->intended(route('admin.dashboard'));
+            return back()
+                ->withErrors($e->errors())
+                ->withInput($request->except('password'))
+                ->with(['captcha_question' => $captcha['question']]);
+        }
+
+        $request->session()->regenerate();
+
+        // Redirect berdasarkan role
+        if (auth()->user()->role === 'admin') {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        return redirect()->intended(route('dashboard'));
     }
-
-    return redirect()->intended(route('dashboard'));
-}
 
     /**
      * Destroy an authenticated session.

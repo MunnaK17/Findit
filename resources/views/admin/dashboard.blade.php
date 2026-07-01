@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    {{-- Stat Cards --}}
+    {{-- Stat Cards Row 1 --}}
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="stat-card navy">
@@ -67,8 +67,34 @@
         </div>
     </div>
 
-    {{-- Second Row Stats --}}
+    {{-- Stat Cards Row 2 - Priority & Claims Stats --}}
     <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card" style="border-left:4px solid #dc2626;">
+                <div class="stat-icon" style="background:#fee2e2;">
+                    <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#dc2626;fill:none;stroke-width:2;stroke-linecap:round;">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <div class="stat-val">{{ $criticalCount }}</div>
+                <div class="stat-lbl">Barang Critical</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="border-left:4px solid #d97706;">
+                <div class="stat-icon" style="background:#fef3c7;">
+                    <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#d97706;fill:none;stroke-width:2;stroke-linecap:round;">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <div class="stat-val">{{ $highCount }}</div>
+                <div class="stat-lbl">Barang High</div>
+            </div>
+        </div>
         <div class="col-md-3">
             <div class="stat-card">
                 <div class="stat-icon" style="background:var(--navy-light);">
@@ -85,36 +111,17 @@
             <div class="stat-card">
                 <div class="stat-icon" style="background:var(--accent-light);">
                     <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--warning);fill:none;stroke-width:2;stroke-linecap:round;">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="8" x2="12" y2="12"/>
-                        <line x1="12" y1="16" x2="12.01" y2="16"/>
-                    </svg>
-                </div>
-                <div class="stat-val">{{ $totalKlaimPending }}</div>
-                <div class="stat-lbl">Klaim Pending</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon" style="background:var(--danger-light);">
-                    <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--danger);fill:none;stroke-width:2;stroke-linecap:round;">
                         <circle cx="11" cy="11" r="8"/>
                         <path d="m21 21-4.35-4.35"/>
                     </svg>
                 </div>
-                <div class="stat-val">{{ \App\Models\Report::where('jenis_laporan','hilang')->where('status','approved')->count() }}</div>
-                <div class="stat-lbl">Barang Hilang Aktif</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="stat-card">
-                <div class="stat-icon" style="background:var(--success-light);">
-                    <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--success);fill:none;stroke-width:2;stroke-linecap:round;">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                    </svg>
-                </div>
-                <div class="stat-val">{{ \App\Models\Report::where('jenis_laporan','temuan')->where('status','approved')->count() }}</div>
-                <div class="stat-lbl">Barang Temuan Aktif</div>
+                <div class="stat-val">{{ $totalKlaimPending }}</div>
+                <div class="stat-lbl">Klaim Pending</div>
+                @if($totalKlaimPending > 0)
+                    <div style="font-size:10px;font-weight:600;color:var(--warning);margin-top:4px;">
+                        Perlu diverifikasi
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -122,7 +129,7 @@
     {{-- Tables Row --}}
     <div class="row g-3">
 
-        {{-- Laporan Terbaru --}}
+        {{-- Laporan Terbaru with Priority & Claims --}}
         <div class="col-md-7">
             <div class="table-card">
                 <div style="padding:12px 16px;border-bottom:0.5px solid var(--border);
@@ -140,6 +147,8 @@
                         <tr>
                             <th>Barang</th>
                             <th>Jenis</th>
+                            <th>Prioritas</th>
+                            <th>Klaim</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -149,13 +158,34 @@
                             <tr>
                                 <td>
                                     <div style="font-weight:600;font-size:12px;">{{ $report->nama_barang }}</div>
-                                    <div style="font-size:10px;color:var(--text-3);">{{ $report->user->name }}</div>
+                                    <div style="font-size:10px;color:var(--text-3);">
+                                        👤 {{ $report->user->name }}
+                                        @if($report->user->nim)
+                                            <span style="color:var(--navy);">({{ $report->user->nim }})</span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td>
                                     @if($report->jenis_laporan === 'hilang')
                                         <span class="findit-badge b-red">Hilang</span>
                                     @else
                                         <span class="findit-badge b-green">Temuan</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    {!! $report->priorityBadgeSmall() !!}
+                                </td>
+                                <td>
+                                    @php
+                                        $pendingClaims = $report->claims->where('status_klaim', 'pending')->count();
+                                        $totalClaims = $report->claims->count();
+                                    @endphp
+                                    @if($totalClaims > 0)
+                                        <span class="findit-badge {{ $pendingClaims > 0 ? 'b-amber' : 'b-navy' }}">
+                                            {{ $pendingClaims > 0 ? "$pendingClaims pending" : "$totalClaims" }}
+                                        </span>
+                                    @else
+                                        <span style="font-size:10px;color:var(--text-3);">-</span>
                                     @endif
                                 </td>
                                 <td>
@@ -178,7 +208,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" style="text-align:center;color:var(--text-3);padding:24px;">
+                                <td colspan="6" style="text-align:center;color:var(--text-3);padding:24px;">
                                     Belum ada laporan
                                 </td>
                             </tr>
@@ -188,7 +218,7 @@
             </div>
         </div>
 
-        {{-- Klaim Terbaru --}}
+        {{-- Klaim Terbaru with Owner Info --}}
         <div class="col-md-5">
             <div class="table-card">
                 <div style="padding:12px 16px;border-bottom:0.5px solid var(--border);
@@ -205,6 +235,7 @@
                     <thead>
                         <tr>
                             <th>Pengklaim</th>
+                            <th>Pemilik Barang</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -215,7 +246,17 @@
                                 <td>
                                     <div style="font-weight:600;font-size:12px;">{{ $klaim->user->name }}</div>
                                     <div style="font-size:10px;color:var(--text-3);">
-                                        {{ Str::limit($klaim->report->nama_barang, 20) }}
+                                        @if($klaim->user->nim)
+                                            {{ $klaim->user->nim }}
+                                        @else
+                                            -
+                                        @endif
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="font-weight:600;font-size:12px;">{{ Str::limit($klaim->report->nama_barang, 15) }}</div>
+                                    <div style="font-size:10px;color:var(--text-3);">
+                                        👤 {{ $klaim->report->user->name ?? 'Unknown' }}
                                     </div>
                                 </td>
                                 <td>
@@ -236,7 +277,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" style="text-align:center;color:var(--text-3);padding:24px;">
+                                <td colspan="4" style="text-align:center;color:var(--text-3);padding:24px;">
                                     Belum ada klaim
                                 </td>
                             </tr>

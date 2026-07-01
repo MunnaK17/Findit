@@ -63,7 +63,7 @@
                                 <div class="item-card-name">{{ $report->nama_barang }}</div>
                                 <div class="item-card-loc">📍 {{ $report->lokasi }}</div>
                                 <div style="font-size:10px;color:var(--text-3);margin-bottom:6px;">
-                                    {{ $report->category->nama_category }} ·
+                                    {{ $report->category->nama_category ?? 'Tanpa kategori' }} ·
                                     {{ $report->tanggal_kejadian->format('d M Y') }}
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
@@ -98,7 +98,7 @@
                                 <div class="carousel-card-name">{{ $report->nama_barang }}</div>
                                 <div class="carousel-card-loc">📍 {{ $report->lokasi }}</div>
                                 <div class="carousel-card-date">
-                                    {{ $report->category->nama_category }} · {{ $report->tanggal_kejadian->format('d M Y') }}
+                                    {{ $report->category->nama_category ?? 'Tanpa kategori' }} · {{ $report->tanggal_kejadian->format('d M Y') }}
                                 </div>
                                 <div class="carousel-card-time">
                                     {{ $report->created_at->diffForHumans() }}

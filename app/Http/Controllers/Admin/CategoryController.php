@@ -20,9 +20,13 @@ class CategoryController extends Controller
     {
         $request->validate([
             'nama_category' => ['required', 'string', 'max:100', 'unique:categories,nama_category'],
+            'priority' => ['required', 'in:critical,high,normal'],
         ]);
 
-        Category::create(['nama_category' => $request->nama_category]);
+        Category::create([
+            'nama_category' => $request->nama_category,
+            'priority' => $request->priority,
+        ]);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Kategori berhasil ditambahkan.');
@@ -42,9 +46,13 @@ class CategoryController extends Controller
 
         $request->validate([
             'nama_category' => ['required', 'string', 'max:100', 'unique:categories,nama_category,' . $id],
+            'priority' => ['required', 'in:critical,high,normal'],
         ]);
 
-        $category->update(['nama_category' => $request->nama_category]);
+        $category->update([
+            'nama_category' => $request->nama_category,
+            'priority' => $request->priority,
+        ]);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Kategori berhasil diperbarui.');

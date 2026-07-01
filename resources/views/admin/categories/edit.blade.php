@@ -12,12 +12,29 @@
             <div class="findit-card p-4">
                 <form method="POST" action="{{ route('admin.categories.update', $category->id) }}">
                     @csrf @method('PUT')
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="form-label">Nama Kategori</label>
                         <input type="text" name="nama_category"
                                class="form-control @error('nama_category') is-invalid @enderror"
                                value="{{ old('nama_category', $category->nama_category) }}">
                         @error('nama_category')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Prioritas</label>
+                        <select name="priority" class="form-select @error('priority') is-invalid @enderror">
+                            <option value="critical" {{ old('priority', $category->priority) === 'critical' ? 'selected' : '' }}>
+                                🔴 Critical - Barang sangat penting
+                            </option>
+                            <option value="high" {{ old('priority', $category->priority) === 'high' ? 'selected' : '' }}>
+                                🟡 High - Barang cukup penting
+                            </option>
+                            <option value="normal" {{ old('priority', $category->priority) === 'normal' ? 'selected' : '' }}>
+                                🟢 Normal - Barang biasa
+                            </option>
+                        </select>
+                        @error('priority')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
