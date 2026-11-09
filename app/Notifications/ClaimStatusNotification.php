@@ -16,9 +16,13 @@ class ClaimStatusNotification extends Notification
         public ?string $adminNote = null
     ) {}
 
+    /**
+     * Hanya email konfirmasi saat klaim diajukan (status pending). Status disetujui/ditolak
+     * dikirim trigger Supabase (email + app_notifications), jadi kanal database tidak dipakai lagi.
+     */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return ['mail'];
     }
 
     public function toDatabase(object $notifiable): array

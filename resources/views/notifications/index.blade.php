@@ -14,7 +14,8 @@
         </div>
 
         @forelse($notifications as $n)
-            <div style="background:{{ $n->read_at ? '#fff' : '#eff6ff' }};
+            <a href="{{ $n->url() }}"
+               style="text-decoration:none;color:inherit;background:{{ $n->read_at ? '#fff' : '#eff6ff' }};
                         border-radius:12px;padding:17px;margin-bottom:13px;
                         border:1px solid {{ $n->read_at ? 'var(--border)' : '#bfdbfe' }};
                         display:flex;gap:13px;align-items:flex-start;">
@@ -32,12 +33,12 @@
                 @if(!$n->read_at)
                     <div style="width:9px;height:9px;border-radius:50%;background:#2563eb;flex-shrink:0;margin-top:7px;"></div>
                 @endif
-            </div>
+            </a>
         @empty
             <div style="text-align:center;padding:51px 26px;color:#9ca3af;">
                 <div style="font-size:51px;margin-bottom:13px;">🔔</div>
                 <div style="font-size:15px;font-weight:600;">Tidak ada notifikasi</div>
-                <div style="font-size:13px;margin-top:4px;">Notifikasi klaim akan muncul di sini</div>
+                <div style="font-size:13px;margin-top:4px;">Kabar soal laporan dan klaimmu akan muncul di sini</div>
             </div>
         @endforelse
 

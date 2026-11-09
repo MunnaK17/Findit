@@ -23,11 +23,37 @@ class Report extends Model
         'admin_notes',
     ];
 
+    /** Masa tayang laporan yang baru disetujui, sama dengan default kolom expires_at. */
+    public const MASA_TAYANG_HARI = 60;
+
     protected function casts(): array
     {
         return [
             'tanggal_kejadian' => 'date',
+            'expires_at'       => 'datetime',
         ];
+    }
+
+    /** Laporan yang boleh tampil di daftar publik: terverifikasi/selesai dan belum kedaluwarsa. */
+    public function scopePubliclyVisible($query)
+    {
+        return $query->whereIn('status', ['approved', 'completed'])
+            ->where('expires_at', '>', now());
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->expires_at !== null && $this->expires_at->isPast();
+    }
+
+    /** Laporan belum diverifikasi/kedaluwarsa hanya boleh dilihat pemilik dan admin. */
+    public function isVisibleTo(?User $user): bool
+    {
+        if ($user && ($user->isAdmin() || $user->id === $this->id_user)) {
+            return true;
+        }
+
+        return in_array($this->status, ['approved', 'completed'], true) && !$this->isExpired();
     }
 
     public function user()
@@ -51,8 +77,8 @@ class Report extends Model
     }
 
     /**
-     * URL foto: foto dari mobile berupa URL Supabase Storage penuh,
-     * foto dari web berupa path relatif di storage lokal.
+     * URL foto: URL Supabase Storage penuh (mobile & web sekarang), atau path relatif
+     * di storage lokal untuk laporan web lama.
      */
     public function fotoUrl(): ?string
     {
@@ -67,7 +93,7 @@ class Report extends Model
 
     public function bisaDiklaim(): bool
     {
-        return $this->jenis_laporan === 'temuan' && $this->status === 'approved';
+        return $this->jenis_laporan === 'temuan' && $this->status === 'approved' && !$this->isExpired();
     }
 
     public function statusBadge(): string

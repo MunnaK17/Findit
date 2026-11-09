@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Log;
  */
 class SupabaseAuth
 {
+    private const SESSION_KEY = 'supabase_session';
+
     private function base(): string
     {
         return rtrim(config('services.supabase.url'), '/') . '/auth/v1';
@@ -75,7 +77,82 @@ class SupabaseAuth
     }
 
     /**
+     * Simpan token sesi Supabase pengguna di session Laravel. Dipakai untuk memanggil
+     * Supabase (mis. Storage) atas nama pengguna, sehingga policy RLS tetap berlaku.
+     */
+    public function rememberSession(array $data): void
+    {
+        if (empty($data['access_token'])) {
+            return;
+        }
+
+        session([self::SESSION_KEY => [
+            'access_token'  => $data['access_token'],
+            'refresh_token' => $data['refresh_token'] ?? null,
+            'expires_at'    => (int) ($data['expires_at'] ?? (time() + (int) ($data['expires_in'] ?? 3600))),
+        ]]);
+    }
+
+    public function forgetSession(): void
+    {
+        session()->forget(self::SESSION_KEY);
+    }
+
+    /** Access token pengguna yang login, diperbarui otomatis bila hampir kedaluwarsa. */
+    public function accessToken(): ?string
+    {
+        $session = session(self::SESSION_KEY);
+        if (!$session) {
+            return null;
+        }
+
+        if ($session['expires_at'] > time() + 60) {
+            return $session['access_token'];
+        }
+
+        if (empty($session['refresh_token'])) {
+            return null;
+        }
+
+        $res = $this->http()->post($this->base() . '/token?grant_type=refresh_token', [
+            'refresh_token' => $session['refresh_token'],
+        ]);
+        $result = $this->result($res);
+        if (!$result['ok']) {
+            $this->forgetSession();
+            return null;
+        }
+
+        $this->rememberSession($result['data']);
+
+        return $result['data']['access_token'];
+    }
+
+    /**
+     * Hapus akun Supabase Auth (profil, laporan, dan klaim ikut lewat foreign key).
+     * Memerlukan SUPABASE_SERVICE_ROLE_KEY di .env.
+     */
+    public function deleteUser(string $userId): array
+    {
+        $serviceKey = config('services.supabase.service_role_key');
+        if (!$serviceKey) {
+            return [
+                'ok'      => false,
+                'message' => 'SUPABASE_SERVICE_ROLE_KEY belum diisi di .env, akun tidak bisa dihapus dari web.',
+            ];
+        }
+
+        $res = Http::withHeaders(['apikey' => $serviceKey, 'Authorization' => 'Bearer ' . $serviceKey])
+            ->acceptJson()
+            ->timeout(20)
+            ->delete($this->base() . '/admin/users/' . urlencode($userId));
+
+        return $this->result($res);
+    }
+
+    /**
      * Ambil (atau buat bila belum ada) profil lokal untuk user Supabase.
+     * Profil biasanya sudah dibuat trigger handle_new_user saat pendaftaran.
      */
     public function profileFor(array $authUser): User
     {
@@ -91,7 +168,8 @@ class SupabaseAuth
             'id'         => $authUser['id'],
             'name'       => $meta['name'] ?? explode('@', $authUser['email'])[0],
             'email'      => $authUser['email'],
-            'role'       => $meta['role'] ?? 'mahasiswa',
+            // user_metadata diisi sendiri oleh pendaftar: role admin tidak pernah diambil dari sini.
+            'role'       => ($meta['role'] ?? null) === 'staff' ? 'staff' : 'mahasiswa',
             'nim'        => $meta['nim'] ?? null,
             'nip'        => $meta['nip'] ?? null,
             'phone'      => $meta['phone'] ?? null,

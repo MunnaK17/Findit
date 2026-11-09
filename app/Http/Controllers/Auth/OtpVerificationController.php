@@ -59,6 +59,7 @@ class OtpVerificationController extends Controller
 
         $user = $supabase->profileFor($authUser);
         Auth::login($user);
+        $supabase->rememberSession($result['data']);
         $request->session()->forget('pending_verification_email');
         $request->session()->regenerate();
 

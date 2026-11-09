@@ -109,6 +109,7 @@ class LoginRequest extends FormRequest
 
         $user = $supabase->profileFor($result['data']['user']);
         Auth::login($user);
+        $supabase->rememberSession($result['data']);
 
         RateLimiter::clear($this->throttleKey());
     }

@@ -5,13 +5,9 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
+            Perbarui nama, nomor telepon, cabang kampus, dan pengaturan notifikasi.
         </p>
     </header>
-
-    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-        @csrf
-    </form>
 
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
@@ -25,31 +21,14 @@
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
-            @endif
+            {{-- Email login dikelola Supabase Auth dan menjadi tujuan email notifikasi, jadi tidak bisa diubah di sini. --}}
+            <x-text-input id="email" type="email" class="mt-1 block w-full bg-gray-100" :value="$user->email" readonly aria-describedby="email-help" />
+            <p id="email-help" class="mt-1 text-sm text-gray-600">Email login tidak bisa diubah. Notifikasi email dikirim ke alamat ini.</p>
         </div>
 
         <div>
-            <x-input-label for="phone" :value="__('Nomor HP / WhatsApp')" />
-            <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full" :value="old('phone', $user->phone)" required autocomplete="tel" placeholder="081234567890" />
+            <x-input-label for="phone" value="Nomor Telepon (opsional)" />
+            <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full" :value="old('phone', $user->phone)" autocomplete="tel" placeholder="081234567890" />
             <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
 
@@ -67,6 +46,19 @@
                 @endforeach
             </select>
             <x-input-error class="mt-2" :messages="$errors->get('id_campus')" />
+        </div>
+
+        <div>
+            <label for="email_notifications" class="inline-flex items-start gap-3 cursor-pointer">
+                <input type="hidden" name="email_notifications" value="0">
+                <input id="email_notifications" name="email_notifications" type="checkbox" value="1"
+                       class="mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                       {{ old('email_notifications', $user->email_notifications ?? true) ? 'checked' : '' }}>
+                <span>
+                    <span class="block text-sm font-medium text-gray-900">Notifikasi Email</span>
+                    <span class="block text-sm text-gray-600">Kirim email saat laporan atau klaim saya disetujui, ditolak, atau selesai. Pengaturan ini sama dengan di aplikasi mobile.</span>
+                </span>
+            </label>
         </div>
 
         <div class="flex items-center gap-4">

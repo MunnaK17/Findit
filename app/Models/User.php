@@ -30,6 +30,24 @@ class User extends Authenticatable
         'id_campus',
         'prodi_unit',
         'avatar_url',
+        'email_notifications',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_notifications' => 'boolean',
+        ];
+    }
+
+    /** Data pribadi tidak pernah ikut keluar lewat toArray()/JSON. */
+    protected $hidden = [
+        'email',
+        'phone',
+        'nim',
+        'nip',
+        'prodi_unit',
+        'email_notifications',
     ];
 
     /** Kredensial dikelola Supabase, bukan Laravel. */

@@ -20,7 +20,7 @@ class ClaimController extends Controller
     public function create($reportId)
     {
         $report = Report::where('jenis_laporan', 'temuan')
-            ->where('status', 'approved')
+            ->where('status', 'approved')->publiclyVisible()
             ->findOrFail($reportId);
 
         // Cek apakah user sudah pernah klaim laporan ini
@@ -55,7 +55,7 @@ class ClaimController extends Controller
         $captchaService = app(MathCaptchaService::class);
 
         $report = Report::where('jenis_laporan', 'temuan')
-            ->where('status', 'approved')
+            ->where('status', 'approved')->publiclyVisible()
             ->findOrFail($reportId);
 
         // Double-check: cek duplikasi lagi

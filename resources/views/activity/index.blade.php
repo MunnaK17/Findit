@@ -111,6 +111,9 @@
                                                style="font-size:11px;color:var(--warning);font-weight:600;text-decoration:none;">
                                                 Edit
                                             </a>
+                                        @endif
+                                        {{-- Laporan yang sudah tayang menyimpan riwayat klaim, jadi hanya pending/ditolak yang bisa dihapus. --}}
+                                        @if(in_array($report->status, ['pending', 'rejected']))
                                             <span style="color:var(--border);">|</span>
                                             <form method="POST"
                                                   action="{{ route('reports.destroy', $report->id) }}"

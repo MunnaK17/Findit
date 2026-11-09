@@ -32,8 +32,16 @@
                     <option value="rejected"  {{ request('status') === 'rejected'  ? 'selected' : '' }}>Rejected</option>
                     <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
                 </select>
+                <select name="campus" class="form-select" style="width:auto;" aria-label="Filter cabang kampus">
+                    <option value="">Semua Cabang</option>
+                    @foreach($campuses as $campus)
+                        <option value="{{ $campus->id }}" {{ (string) request('campus') === (string) $campus->id ? 'selected' : '' }}>
+                            {{ str_replace('UBSI Kampus ', '', $campus->nama_kampus) }}
+                        </option>
+                    @endforeach
+                </select>
                 <button type="submit" class="btn btn-navy px-3">Filter</button>
-                @if(request('search') || request('jenis') || request('status'))
+                @if(request('search') || request('jenis') || request('status') || request('campus'))
                     <a href="{{ route('admin.reports.index') }}" class="btn btn-outline-findit px-3">Reset</a>
                 @endif
             </div>

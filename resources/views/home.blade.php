@@ -282,7 +282,7 @@
                                 <span>{{ $testimonial->getUserInitials() }}</span>
                                 <div>
                                     <strong>{{ $testimonial->user->name }}</strong>
-                                    <small>{{ $testimonial->user->nim ?? 'Mahasiswa' }}</small>
+                                    <small>{{ $testimonial->user->prodi_unit ?: ($testimonial->user->isStaff() ? 'Staff UBSI' : 'Mahasiswa UBSI') }}</small>
                                 </div>
                             </div>
                             <div class="landing-story__rating">

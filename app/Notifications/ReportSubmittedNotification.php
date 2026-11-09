@@ -13,9 +13,13 @@ class ReportSubmittedNotification extends Notification
         public string $jenis
     ) {}
 
+    /**
+     * Email konfirmasi saat laporan diajukan. Notifikasi in-app memakai app_notifications
+     * (trigger Supabase), jadi kanal database Laravel tidak dipakai lagi.
+     */
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return ['mail'];
     }
 
     public function toDatabase(object $notifiable): array

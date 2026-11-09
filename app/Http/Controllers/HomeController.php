@@ -13,7 +13,7 @@ class HomeController extends Controller
 
         $latest = fn (string $jenis) => Report::with(['category', 'user', 'campus'])
             ->where('jenis_laporan', $jenis)
-            ->where('status', 'approved')
+            ->where('status', 'approved')->publiclyVisible()
             ->when($campusId, fn ($q) => $q->where('id_campus', $campusId))
             ->latest()
             ->take(6)

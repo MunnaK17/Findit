@@ -8,9 +8,9 @@ use App\Models\Claim;
 use App\Models\Report;
 use App\Notifications\ReportSubmittedNotification;
 use App\Services\MathCaptchaService;
+use App\Services\SupabaseStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,7 +20,7 @@ class ReportController extends Controller
     public function cari(Request $request)
     {
         $query = Report::with(['category', 'user', 'campus'])
-            ->whereIn('status', ['approved', 'completed']);
+            ->publiclyVisible();
 
         if (in_array($request->jenis, ['hilang', 'temuan'], true)) {
             $query->where('jenis_laporan', $request->jenis);
@@ -62,7 +62,8 @@ class ReportController extends Controller
     {
         $query = Report::with(['category', 'user', 'campus'])
             ->where('jenis_laporan', 'hilang')
-            ->where('status', 'approved');
+            ->where('status', 'approved')
+            ->publiclyVisible();
 
         if ($request->search) {
             $search = '%' . $request->search . '%';
@@ -100,7 +101,8 @@ class ReportController extends Controller
     {
         $query = Report::with(['category', 'user', 'campus'])
             ->where('jenis_laporan', 'temuan')
-            ->where('status', 'approved');
+            ->where('status', 'approved')
+            ->publiclyVisible();
 
         if ($request->search) {
             $search = '%' . $request->search . '%';
@@ -137,6 +139,10 @@ class ReportController extends Controller
     public function show($id)
     {
         $report = Report::with(['category', 'user', 'campus', 'claims'])->findOrFail($id);
+
+        // Laporan belum diverifikasi, ditolak, atau kedaluwarsa hanya untuk pemilik & admin.
+        abort_unless($report->isVisibleTo(Auth::user()), 404);
+
         return view('reports.show', compact('report'));
     }
 
@@ -182,7 +188,13 @@ class ReportController extends Controller
 
         $fotoPath = null;
         if ($request->hasFile('foto_barang')) {
-            $fotoPath = $this->uploadPhoto($request->file('foto_barang'));
+            $fotoPath = app(SupabaseStorage::class)->uploadReportPhoto($request->file('foto_barang'), Auth::id());
+            if (!$fotoPath) {
+                return back()
+                    ->withInput($request->except(['captcha_answer', 'foto_barang']))
+                    ->withErrors(['foto_barang' => 'Foto gagal diunggah. Coba lagi, atau masuk ulang bila sesi sudah lama.'])
+                    ->with(['captcha_question' => $captchaService->generate()['question']]);
+            }
         }
 
         $report = Report::create([
@@ -291,10 +303,20 @@ class ReportController extends Controller
             'foto_barang'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
 
-        $fotoPath = $report->foto_barang;
+        $storage = app(SupabaseStorage::class);
+        $oldFoto = $report->foto_barang;
+        $fotoPath = $oldFoto;
         if ($request->hasFile('foto_barang')) {
-            $fotoPath = $this->uploadPhoto($request->file('foto_barang'));
+            $fotoPath = $storage->uploadReportPhoto($request->file('foto_barang'), Auth::id());
+            if (!$fotoPath) {
+                return back()
+                    ->withInput($request->except('foto_barang'))
+                    ->withErrors(['foto_barang' => 'Foto gagal diunggah. Coba lagi, atau masuk ulang bila sesi sudah lama.']);
+            }
         }
+
+        // Sama dengan mobile: isi laporan publik yang diubah kembali menunggu verifikasi admin.
+        $perluVerifikasiUlang = $report->status === 'approved';
 
         $report->update([
             'id_category'      => $request->id_category,
@@ -304,10 +326,17 @@ class ReportController extends Controller
             'lokasi'           => $request->lokasi,
             'tanggal_kejadian' => $request->tanggal_kejadian,
             'foto_barang'      => $fotoPath,
+            'status'           => $perluVerifikasiUlang ? 'pending' : $report->status,
         ]);
 
+        if ($fotoPath !== $oldFoto) {
+            $storage->deleteByUrl($oldFoto);
+        }
+
         return redirect()->route('activity.index')
-            ->with('success', 'Laporan berhasil diperbarui.');
+            ->with('success', $perluVerifikasiUlang
+                ? 'Laporan diperbarui dan kembali menunggu verifikasi admin.'
+                : 'Laporan berhasil diperbarui.');
     }
 
     // Hapus laporan
@@ -315,48 +344,21 @@ class ReportController extends Controller
     {
         $report = Report::where('id_user', Auth::id())->findOrFail($id);
 
+        // Laporan yang sudah tayang/selesai menyimpan riwayat klaim orang lain, jadi tidak boleh dihapus.
+        if (!in_array($report->status, ['pending', 'rejected'], true)) {
+            return redirect()->route('activity.index')
+                ->with('error', 'Hanya laporan yang menunggu verifikasi atau ditolak yang bisa dihapus.');
+        }
+
         if ($report->foto_barang && !str_starts_with($report->foto_barang, 'http')) {
             Storage::disk('public')->delete($report->foto_barang);
+        } else {
+            app(SupabaseStorage::class)->deleteByUrl($report->foto_barang);
         }
 
         $report->delete();
 
         return redirect()->route('activity.index')
             ->with('success', 'Laporan berhasil dihapus.');
-    }
-
-    /**
-     * Upload foto ke Supabase Storage bucket `reports` agar sinkron dengan aplikasi mobile,
-     * dengan fallback ke storage lokal.
-     */
-    private function uploadPhoto($file): string
-    {
-        $supabaseUrl = rtrim(config('services.supabase.url'), '/');
-        $anonKey = config('services.supabase.anon_key');
-
-        if ($supabaseUrl && $anonKey) {
-            try {
-                $ext = $file->getClientOriginalExtension() ?: 'jpg';
-                $fileName = round(microtime(true) * 1000) . '_' . (Auth::id() ?? 'web') . '.' . $ext;
-                $objectPath = 'reports/' . $fileName;
-
-                $res = Http::withHeaders([
-                    'apikey' => $anonKey,
-                    'Authorization' => 'Bearer ' . $anonKey,
-                    'x-upsert' => 'true',
-                ])->withBody(
-                    file_get_contents($file->getRealPath()),
-                    $file->getMimeType() ?: 'image/jpeg'
-                )->post("{$supabaseUrl}/storage/v1/object/reports/{$objectPath}");
-
-                if ($res->successful()) {
-                    return "{$supabaseUrl}/storage/v1/object/public/reports/{$objectPath}";
-                }
-            } catch (\Throwable $e) {
-                Log::warning('Supabase storage upload fallback to local: ' . $e->getMessage());
-            }
-        }
-
-        return $file->store('foto_barang', 'public');
     }
 }

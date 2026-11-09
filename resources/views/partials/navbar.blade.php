@@ -256,6 +256,12 @@
         }).catch(() => {});
     });
 
+    function escapeHtml(value) {
+        const el = document.createElement('div');
+        el.textContent = value ?? '';
+        return el.innerHTML;
+    }
+
     // Load notifications
     function loadNotifications() {
         fetch('/notifications/api')
@@ -270,12 +276,13 @@
                     const bg = n.read_at ? '#fff' : '#eff6ff';
                     const div = document.createElement('div');
                     div.style.cssText = `background:${bg};padding:12px 16px;border-bottom:1px solid #f3f4f6;cursor:pointer;`;
+                    // Judul & isi berisi nama barang ketikan pengguna: di-escape agar tidak jadi HTML.
                     div.innerHTML = `
                         <div style="font-size:15px;font-weight:600;color:#111827;display:flex;align-items:center;gap:6px;">
                             <span style="font-size:18px;">🔔</span>
-                            <span>${n.title}</span>
+                            <span>${escapeHtml(n.title)}</span>
                         </div>
-                        <div style="font-size:14px;color:#6b7280;margin-top:5px;">${n.body}</div>
+                        <div style="font-size:14px;color:#6b7280;margin-top:5px;">${escapeHtml(n.body)}</div>
                         <div style="font-size:13px;color:#9ca3af;margin-top:3px;">${timeAgo(n.created_at)}</div>
                     `;
                     div.addEventListener('click', function() {

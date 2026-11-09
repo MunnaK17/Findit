@@ -18,15 +18,15 @@ class ChatbotController extends Controller
         $userMessage = strtolower(trim($request->message));
 
         // Statistik
-        $totalTemuan = Report::where('jenis_laporan', 'temuan')->where('status', 'approved')->count();
-        $totalHilang = Report::where('jenis_laporan', 'hilang')->where('status', 'approved')->count();
+        $totalTemuan = Report::where('jenis_laporan', 'temuan')->where('status', 'approved')->publiclyVisible()->count();
+        $totalHilang = Report::where('jenis_laporan', 'hilang')->where('status', 'approved')->publiclyVisible()->count();
         $totalSelesai = Report::where('status', 'completed')->count();
         $categories = Category::pluck('nama_category')->join(', ');
 
         // Barang temuan terbaru
         $temuanTerbaru = Report::with('category')
             ->where('jenis_laporan', 'temuan')
-            ->where('status', 'approved')
+            ->where('status', 'approved')->publiclyVisible()
             ->latest()
             ->take(5)
             ->get()
@@ -39,7 +39,7 @@ class ChatbotController extends Controller
         // Barang hilang terbaru
         $hilangTerbaru = Report::with('category')
             ->where('jenis_laporan', 'hilang')
-            ->where('status', 'approved')
+            ->where('status', 'approved')->publiclyVisible()
             ->latest()
             ->take(5)
             ->get()
@@ -50,20 +50,20 @@ class ChatbotController extends Controller
             ->join("\n");
 
         // Cek apakah ada barang
-        $hasTemuan = Report::where('jenis_laporan', 'temuan')->where('status', 'approved')->exists();
-        $hasHilang = Report::where('jenis_laporan', 'hilang')->where('status', 'approved')->exists();
+        $hasTemuan = Report::where('jenis_laporan', 'temuan')->where('status', 'approved')->publiclyVisible()->exists();
+        $hasHilang = Report::where('jenis_laporan', 'hilang')->where('status', 'approved')->publiclyVisible()->exists();
 
         // Daftar temuan dengan detail lengkap
         $temuanList = Report::with('category')
             ->where('jenis_laporan', 'temuan')
-            ->where('status', 'approved')
+            ->where('status', 'approved')->publiclyVisible()
             ->latest()
             ->take(5)
             ->get();
 
         $hilangList = Report::with('category')
             ->where('jenis_laporan', 'hilang')
-            ->where('status', 'approved')
+            ->where('status', 'approved')->publiclyVisible()
             ->latest()
             ->take(5)
             ->get();

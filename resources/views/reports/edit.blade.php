@@ -18,6 +18,21 @@
                   enctype="multipart/form-data">
                 @csrf @method('PUT')
 
+                @if($report->status === 'approved')
+                    <div class="findit-card p-3 mb-3" role="note"
+                         style="background:#fef3dc;border:1px solid #f9a61a;font-size:13px;color:#8d5b0f;">
+                        Laporan ini sedang tayang. Setelah disimpan, laporan kembali menunggu verifikasi admin
+                        dan tidak tampil di daftar publik sampai disetujui lagi.
+                    </div>
+                @endif
+
+                @error('foto_barang')
+                    <div class="findit-card p-3 mb-3" role="alert"
+                         style="background:#fdecec;border:1px solid #dc2626;font-size:13px;color:#b91c1c;">
+                        {{ $message }}
+                    </div>
+                @enderror
+
                 {{-- Info Barang --}}
                 <div class="findit-card p-4 mb-3">
                     <div style="font-size:11px;font-weight:700;color:var(--text-3);
