@@ -1,0 +1,146 @@
+<?php
+
+namespace App\Http\Requests\Auth;
+
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use App\Services\MathCaptchaService;
+
+class LoginRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Prepare inputs for validation (allow logging in with username/NIM without @bsi.ac.id).
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('email')) {
+            $input = trim((string) $this->input('email'));
+            if ($input !== '' && !str_contains($input, '@')) {
+                $this->merge(['email' => $input . '@bsi.ac.id']);
+            }
+        }
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+            'captcha_answer' => ['required', 'integer', 'min:0', 'max:18'],
+        ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if (!$this->validateCaptcha()) {
+                $validator->errors()->add('captcha_answer', 'Jawaban captcha salah. Silakan coba lagi.');
+            }
+        });
+    }
+
+    /**
+     * Validate the math captcha answer.
+     */
+    protected function validateCaptcha(): bool
+    {
+        $captchaService = app(MathCaptchaService::class);
+        $answer = $this->input('captcha_answer');
+
+        if ($answer === null || $answer === '') {
+            return false;
+        }
+
+        return $captchaService->validate((int) $answer);
+    }
+
+    /**
+     * Attempt to authenticate the request's credentials.
+     *
+     * @throws ValidationException
+     */
+    public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
+
+        $supabase = app(\App\Services\SupabaseAuth::class);
+        $result = $supabase->signIn($this->input('email'), $this->input('password'));
+
+        if (! $result['ok']) {
+            // Akun belum diverifikasi: kirim ulang kode & arahkan ke halaman OTP.
+            if (($result['code'] ?? null) === 'email_not_confirmed'
+                || str_contains(strtolower($result['message'] ?? ''), 'email not confirmed')) {
+                $email = strtolower(trim($this->input('email')));
+                $supabase->resend($email);
+                session(['pending_verification_email' => $email]);
+
+                throw ValidationException::withMessages([
+                    'email' => 'Email belum diverifikasi. Kode baru telah dikirim ke email Anda.',
+                ])->redirectTo(route('verification.otp'));
+            }
+
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = $supabase->profileFor($result['data']['user']);
+        Auth::login($user);
+
+        RateLimiter::clear($this->throttleKey());
+    }
+
+    /**
+     * Ensure the login request is not rate limited.
+     *
+     * @throws ValidationException
+     */
+    public function ensureIsNotRateLimited(): void
+    {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+            return;
+        }
+
+        event(new Lockout($this));
+
+        $seconds = RateLimiter::availableIn($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
+        ]);
+    }
+
+    /**
+     * Get the rate limiting throttle key for the request.
+     */
+    public function throttleKey(): string
+    {
+        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+    }
+}
