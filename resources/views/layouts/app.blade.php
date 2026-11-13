@@ -7,7 +7,8 @@
     @auth
     <meta name="user-id" content="{{ Auth::id() }}">
     @endauth
-    <title>{{ config('app.name', 'FindIt') }} — @yield('title', 'Dashboard')</title>
+    <title>@hasSection('title')@yield('title') — Findit-UBSI @else Findit-UBSI @endif</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/ubsi-logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -147,6 +148,13 @@
         conversationStarted = true;
     }
 
+    // Balasan bot memuat nama barang dari laporan pengguna lain, jadi semua teks di-escape sebelum masuk innerHTML.
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = String(text ?? '');
+        return div.innerHTML.replace(/"/g, '&quot;');
+    }
+
     function sendQuickReply(btn) {
         const msg = btn.getAttribute('data-message');
         document.getElementById('chat-input').value = msg;
@@ -166,7 +174,7 @@
             <div style="background:linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);border-radius:16px;padding:12px 16px;
                         font-size:13px;color:#fff;max-width:85%;line-height:1.6;
                         align-self:flex-end;margin-left:auto;">
-                ${msg}
+                ${escapeHtml(msg)}
             </div>`;
         input.value = '';
         messages.scrollTop = messages.scrollHeight;
@@ -194,7 +202,7 @@
             document.getElementById(loadingId).remove();
 
             // Format reply dengan line breaks
-            const formattedReply = data.reply.replace(/\n/g, '<br>');
+            const formattedReply = escapeHtml(data.reply).replace(/\n/g, '<br>');
 
             let html = `
                 <div style="background:#f3f4f6;border-radius:16px;padding:12px 16px;
@@ -206,7 +214,7 @@
             if (data.quickReplies && data.quickReplies.length > 0) {
                 html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">`;
                 data.quickReplies.forEach(qr => {
-                    html += `<button onclick="sendQuickReply(this)" data-message="${qr.value}" style="background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:8px 14px;font-size:12px;color:#1e40af;cursor:pointer;">${qr.label}</button>`;
+                    html += `<button onclick="sendQuickReply(this)" data-message="${escapeHtml(qr.value)}" style="background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:8px 14px;font-size:12px;color:#1e40af;cursor:pointer;">${escapeHtml(qr.label)}</button>`;
                 });
                 html += `</div>`;
             }
